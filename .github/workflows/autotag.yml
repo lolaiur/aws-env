@@ -23,7 +23,7 @@ jobs:
         RELEASE_BRANCHES: main
         DEFAULT_BUMP: patch
         INITIAL_VERSION: "0.0.0"
-        VERBOSE: true
+        #VERBOSE: true
         #CUSTOM_TAG: "v${{ github.run_number }}"
 
     # Debug: Print the new tag
