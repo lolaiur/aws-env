@@ -12,6 +12,8 @@ jobs:
     - uses: actions/checkout@v3
       with:
         fetch-depth: '0'
+
+    # Bump/tag version
     - id: auto-tag
       name: "Bump/tag version"
       uses: anothrNick/github-tag-action@1.35.0
@@ -21,6 +23,12 @@ jobs:
         RELEASE_BRANCHES: main
         DEFAULT_BUMP: patch
         INITIAL_VERSION: "0.1.0"
+
+    # Debug: Print the new tag
+    - name: Debug print new tag
+      run: echo "New Tag from action: ${{ steps.auto-tag.outputs.new_tag }}"
+
+    # Extract Version Numbers
     - id: extract-version-numbers
       name: "Extract Version Numbers"
       run: |
@@ -29,22 +37,11 @@ jobs:
         major="$(echo $version | cut -d. -f1)"
         minor="$(echo $version | cut -d. -f2)"
         revision="$(echo $version | cut -d. -f3)"
-        message="$(git log --format=%B -n 1)"
         echo "::set-output name=major::$major"
         echo "::set-output name=minor::$minor"
         echo "::set-output name=revision::$revision"
-        echo "::set-output name=message::$message"
 
-    - uses: rickstaa/action-create-tag@v1
-      name: "Create Full Version Tag"
-      with:
-        tagname: "v${{ steps.extract-version-numbers.outputs.major }}.${{ steps.extract-version-numbers.outputs.minor }}.${{ steps.extract-version-numbers.outputs.revision }}"
-
-    - name: "Tag Major Version"
-      uses: rickstaa/action-create-tag@v1
-      with:
-        tagname: "v${{ steps.extract-version-numbers.outputs.major }}"
-
+    # Check Commit Message
     - name: Check Commit Message
       id: check-commit-message
       shell: bash
@@ -61,10 +58,11 @@ jobs:
           echo "Commit message does NOT contain '#norelease'"
         fi
 
+    # Create GitHub Release
     - name: Create GitHub Release
       uses: ncipollo/release-action@v1
       if: ${{ steps.check-commit-message.outputs.is-release == 'true' }}
       with:
-        tag: ${{ steps.auto-tag.outputs.net_tag }}
+        tag: ${{ steps.auto-tag.outputs.new_tag }} 
         bodyFile: "RELEASE_NOTES.md"
         token: ${{ secrets.GITHUB_TOKEN }}
