@@ -10,6 +10,57 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: Klemensas/action-autotag@stable
       with:
+        #GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        fetch-depth: '0'
+    - id: auto-tag
+      name: "Bump/Tag Version"
+      env:
         GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        WITH_V: true
+        RELEASE_BRANCHES: main
+        DEFAULT_BUMP: patch
+        INITIAL_VERSION: "0.1.0"
+    - id: extract-version-numbers
+      name: "Extract Version Numbers"
+      run: |
+          tag="${{ steps.auto-tag.outputs.net_tag }}"
+          version=${tag#v}
+          major="$(echo $version | cut -d. -f1)"
+          minor="$(echo $version | cut -d. -f2)"
+          revision="$(echo $version | cut -d. -f3)"
+          message="$(git log --format=%B -n 1)"
+          echo "::set-out name=major::$major"
+          echo "::set-out name=minor::$minor"
+          echo "::set-out name=revision:$revision"
+          echo "::set-out name=message:$message"
+      - uses: rickstaa/action-create-tag@v1
+        name: "Checkout Create Tag"
+        with:
+          tagname: "v${{ steps.extract-version-numbers.outputs.major }}.${{ steps.extract_version-numbers.outputs.minor }}"
+      - name: "Tag Major Version"
+        uses: rickstaa/action-create-tag@v1
+        with:
+          tagname: "v${{ steps.extract-version-numbers.outputs.major }}"
+      - name: Check Commit Message
+        id: check-commit-message
+        shell: bash
+        run: |
+          commit_msg="$(git log --no-merges -1 --prety=format:"%s%n%n%b")"
+          echo "::group::Commit Message"
+          echo "${commit_msg}"
+          if echo "${commit_msg}" | grep "#norelease" --ignore-case > /dev/null
+          then
+            echo '::set-output name=is-release::false'
+            echo "Commity message contains '#norelease'"
+          else
+            echo '::set-output name=is-release::true'
+            echo "Commit message does NOT contain '#norelease'"
+          fi
+      - name: Create GitHub Release
+        uses: ncipollo/release-action@v1
+        if: ${{ steps.check-commit-message.outputs.is-release == 'true' }}
+        with:
+          tag: ${{ steps.auto-tag.outputs.net_tag }}
+          bodyFile: "RELEASE_NOTES.md"
+          tokenL ${{ secrets.GITHUB_TOKEN }}
