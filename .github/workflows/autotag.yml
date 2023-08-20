@@ -22,7 +22,8 @@ jobs:
         WITH_V: true
         RELEASE_BRANCHES: main
         DEFAULT_BUMP: patch
-        #INITIAL_VERSION: "0.1.0"
+        INITIAL_VERSION: "0.0.0"
+        VERBOSE: true
         #CUSTOM_TAG: "v${{ github.run_number }}"
 
     # Debug: Print the new tag
