@@ -24,7 +24,7 @@ jobs:
     - id: extract-version-numbers
       name: "Extract Version Numbers"
       run: |
-        tag="${{ steps.auto-tag.outputs.net_tag }}"
+        tag="${{ steps.auto-tag.outputs.new_tag }}"
         version=${tag#v}
         major="$(echo $version | cut -d. -f1)"
         minor="$(echo $version | cut -d. -f2)"
