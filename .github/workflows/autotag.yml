@@ -26,7 +26,8 @@ jobs:
 
     # Debug: Print the new tag
     - name: Debug print new tag
-      run: echo "New Tag from action: ${{ steps.auto-tag.outputs.new_tag }}"
+      run: |
+        echo "New Tag from action:" ${{ steps.auto-tag.outputs.new_tag }}
 
     # Extract Version Numbers
     - id: extract-version-numbers
