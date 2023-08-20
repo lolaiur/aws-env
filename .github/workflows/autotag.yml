@@ -17,7 +17,7 @@ jobs:
       name: Github Tag Bump
       uses: anothrNick/github-tag-action@1.35.0
       with:
-        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         WITH_V: true
         RELEASE_BRANCHES: main
         DEFAULT_BUMP: patch
