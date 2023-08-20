@@ -14,8 +14,8 @@ jobs:
         fetch-depth: '0'
 
     - id: auto-tag
-      name: "Bump/Tag Version"
-      uses: anothrNick/github-tag-action@1.35.0
+      name: Github Tag Bump
+      uses: anothrNick/github-tag-action@1.67.0
       with:
         GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         WITH_V: true
