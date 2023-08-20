@@ -17,7 +17,7 @@ jobs:
       name: Github Tag Bump
       uses: anothrNick/github-tag-action@1.67.0
       with:
-        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        GITHUB_TOKEN: "${{ secrets.TOKEN }}"
         WITH_V: true
         RELEASE_BRANCHES: main
         DEFAULT_BUMP: patch
@@ -69,4 +69,4 @@ jobs:
       with:
         tag: ${{ steps.auto-tag.outputs.net_tag }}
         bodyFile: "RELEASE_NOTES.md"
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.TOKEN }}
