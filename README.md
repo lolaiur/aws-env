@@ -1,5 +1,6 @@
 # aws-env fun times
 # params.tfvars style:
+```
 create_cgw = false # Creates CloudWAN (WIP)
 deploy_ssm = false # Enables SSM Service (Complete)
 deploy_ep  = false # Creates SSM Required Endpoints (Complete)
@@ -8,11 +9,11 @@ deploy_ovp = true  # Deploys OpenVPN infrastructure (Complete)
 deploy_dns = true  # Deploys DNS & Updates A Records
 deploy_obi = true  # Deploys OBI & Routes to NATGW
 
-os_user = "aiur"
-os_pass = "HakteK1982!"
+os_user = "a_user_name"
+os_pass = "a_pass_word"
 
 
-my_ip = "99.183.197.154"
+my_ip = "xxx.xxx.xxx.xxx" # probably not needed
 
 vpcs = { # Create VPCs!
   "us-east-1" = {
@@ -56,7 +57,7 @@ ec2 = { #creat all the servers you need, in whatever vpc you wish, to whatever A
   server04 = { vpc = "vpc-02", az = "1", os = "lnx", ud = "Y" }
   server05 = { vpc = "vpc-02", az = "1", os = "lnx", ud = "Y" }
   server06 = { vpc = "vpc-02", az = "1", os = "win", ud = "Y" }
-  #  server07 = { vpc = "vpc-02", az = "1", os = "lnx" }
+# server07 = { vpc = "vpc-02", az = "1", os = "lnx" }
 
 }
 
@@ -64,7 +65,7 @@ public_key       = "ssh-rsa your public key"
 admin_user       = "whateveryouwant"
 storage_path     = "./scripts/openvpn"
 private_key_path = "./scripts/openvpn/key" # <replace the .pem in the path with your private key.  This is used in the null_resources for the SSH connectcfb
-
+```
 
 <!--- BEGIN_TF_DOCS --->
 
