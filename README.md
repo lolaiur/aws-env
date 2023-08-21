@@ -184,7 +184,8 @@ private_key_path = "./scripts/openvpn/key" # <replace the .pem in the path with 
 | <a name="input_deploy_vpn"></a> [deploy\_vpn](#input\_deploy\_vpn) | n/a | `bool` | `false` | no |
 | <a name="input_ec2"></a> [ec2](#input\_ec2) | Configuration for EC2 instances | <pre>map(object({<br>    vpc = string<br>    az  = string<br>    os  = string<br>    ud  = string<br>  }))</pre> | n/a | yes |
 | <a name="input_my_ip"></a> [my\_ip](#input\_my\_ip) | n/a | `string` | n/a | yes |
-| <a name="input_os_pass"></a> [os\_pass](#input\_os\_pass) | n/a | `string` | n/a | yes |
+| <a name="input_os_pass"></a> [os\_pass](#input\_os\_pass) | Password you wish to pass into userdata | `string` | n/a | yes |
+| <a name="input_os_user"></a> [os\_user](#input\_os\_user) | Username you wish to pass into userdata | `string` | n/a | yes |
 | <a name="input_private_key_path"></a> [private\_key\_path](#input\_private\_key\_path) | n/a | `string` | `"./key.pub"` | no |
 | <a name="input_public_key"></a> [public\_key](#input\_public\_key) | Public key for EC2 instances | `string` | `""` | no |
 | <a name="input_route_tables"></a> [route\_tables](#input\_route\_tables) | n/a | <pre>map(object({<br>    associations     = list(string)<br>    propagations     = list(string)<br>    static_routes    = map(string)<br>    blackhole_routes = list(string)<br>  }))</pre> | n/a | yes |
