@@ -1,0 +1,17 @@
+name: Generate Terraform Docs
+on:
+    pull_request:
+        branches: [ main ]
+jobs:
+    docs:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+              with:
+                ref: ${{ github.event.pull_request.head.ref }}
+            - name: Renders TF docs instead README.md
+              uses: terraform-docs/gh-actions@main
+              with:
+                output-file: "README.md"
+                output-method: "inject"
+                git-push: "true"
