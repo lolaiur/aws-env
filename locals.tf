@@ -27,15 +27,6 @@ locals {
   ])
 
   # Collecting VPC subnets into a list for easy reference.
-  # vpc_subnets = flatten([
-  #   for vpc_key, vpc in module.vpc : [
-  #     for subnet in vpc.intra_subnets : {
-  #       vpc_key   = vpc_key
-  #       subnet_id = subnet
-  #     }
-  #   ]
-  # ])
-
   vpc_subnets = flatten([
     for region, vpcs in var.vpcs : [
       for vpc_key, vpc in vpcs : [
@@ -156,7 +147,7 @@ locals {
   # Windows User Data
   windows_userdata = <<-EOT
     <powershell>
-    $username = "aiur"
+    $username = "${var.os_user}"
     $password = "${var.os_pass}"
     $passwordPlainText = $password
     $computer = [ADSI]"WinNT://$env:COMPUTERNAME,Computer"
@@ -172,7 +163,7 @@ locals {
   # Linux User Data
   linux_userdata = <<-EOT
     #!/bin/bash
-    username="aiur"
+    username="${var.os_user}"
     password="${var.os_pass}"
     sudo useradd -m $username
     echo "$username:$password" | sudo chpasswd
@@ -208,4 +199,12 @@ locals {
   #    ]
   #  ]
   #])
+  # vpc_subnets = flatten([
+  #   for vpc_key, vpc in module.vpc : [
+  #     for subnet in vpc.intra_subnets : {
+  #       vpc_key   = vpc_key
+  #       subnet_id = subnet
+  #     }
+  #   ]
+  # ])
 }

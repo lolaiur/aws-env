@@ -101,8 +101,13 @@ variable "deploy_dns" {
   default = false
 }
 
+variable "os_user" {
+  description = "Username you wish to pass into userdata"
+  type = string
+}
 
 variable "os_pass" {
+  description = "Password you wish to pass into userdata"
   type = string
 }
 
