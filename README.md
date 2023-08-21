@@ -1,5 +1,71 @@
 # aws-env fun times
+# params.tfvars style:
+```
+create_cgw = false # Creates CloudWAN (WIP)
+deploy_ssm = false # Enables SSM Service (Complete)
+deploy_ep  = false # Creates SSM Required Endpoints (Complete)
+deploy_vpn = false # Deploys site-to-site VPN (Use OpenVPN instead)
+deploy_ovp = true  # Deploys OpenVPN infrastructure (Complete)
+deploy_dns = true  # Deploys DNS & Updates A Records
+deploy_obi = true  # Deploys OBI & Routes to NATGW
 
+os_user = "a_user_name"
+os_pass = "a_pass_word"
+
+
+my_ip = "xxx.xxx.xxx.xxx" # probably not needed
+
+vpcs = { # Create VPCs!
+  "us-east-1" = {
+    "vpc-01" = {
+      cidr   = "10.10.0.0/16"
+      subnet = ["10.10.0.0/24", "10.10.1.0/24"]
+      tgw    = ["10.10.10.0/24", "10.10.20.0/24"]
+      env    = "dev"
+    }
+    "vpc-02" = {
+      cidr   = "10.20.0.0/16"
+      subnet = ["10.20.0.0/24"]
+      tgw    = ["10.20.10.0/24"]
+      env    = "prd"
+    }
+    "vpc-03" = {
+      cidr   = "10.30.0.0/16"
+      subnet = ["10.30.0.0/24", "10.30.1.0/24"]
+      tgw    = ["10.30.10.0/24", "10.30.20.0/24"]
+      env    = "prd"
+  }
+}
+
+route_tables = { # Default behavior associates & propgates to default rtb
+  "main" = {
+    associations = [
+    ]
+    propagations = [
+    ]
+    static_routes = {
+    }
+    blackhole_routes = [
+    ]
+  }
+}
+
+ec2 = { #creat all the servers you need, in whatever vpc you wish, to whatever AZ you desire, with any OS, and Y/N Userdata deployment 
+  server01 = { vpc = "vpc-01", az = "1", os = "win", ud = "Y" }
+  server02 = { vpc = "vpc-01", az = "2", os = "lnx", ud = "Y" }
+  server03 = { vpc = "vpc-03", az = "2", os = "win", ud = "Y" }
+  server04 = { vpc = "vpc-02", az = "1", os = "lnx", ud = "Y" }
+  server05 = { vpc = "vpc-02", az = "1", os = "lnx", ud = "Y" }
+  server06 = { vpc = "vpc-02", az = "1", os = "win", ud = "Y" }
+# server07 = { vpc = "vpc-02", az = "1", os = "lnx" }
+
+}
+
+public_key       = "ssh-rsa your public key"
+admin_user       = "whateveryouwant"
+storage_path     = "./scripts/openvpn"
+private_key_path = "./scripts/openvpn/key" # <replace the .pem in the path with your private key.  This is used in the null_resources for the SSH connectcfb
+```
 
 <!--- BEGIN_TF_DOCS --->
 
@@ -118,7 +184,8 @@
 | <a name="input_deploy_vpn"></a> [deploy\_vpn](#input\_deploy\_vpn) | n/a | `bool` | `false` | no |
 | <a name="input_ec2"></a> [ec2](#input\_ec2) | Configuration for EC2 instances | <pre>map(object({<br>    vpc = string<br>    az  = string<br>    os  = string<br>    ud  = string<br>  }))</pre> | n/a | yes |
 | <a name="input_my_ip"></a> [my\_ip](#input\_my\_ip) | n/a | `string` | n/a | yes |
-| <a name="input_os_pass"></a> [os\_pass](#input\_os\_pass) | n/a | `string` | n/a | yes |
+| <a name="input_os_pass"></a> [os\_pass](#input\_os\_pass) | Password you wish to pass into userdata | `string` | n/a | yes |
+| <a name="input_os_user"></a> [os\_user](#input\_os\_user) | Username you wish to pass into userdata | `string` | n/a | yes |
 | <a name="input_private_key_path"></a> [private\_key\_path](#input\_private\_key\_path) | n/a | `string` | `"./key.pub"` | no |
 | <a name="input_public_key"></a> [public\_key](#input\_public\_key) | Public key for EC2 instances | `string` | `""` | no |
 | <a name="input_route_tables"></a> [route\_tables](#input\_route\_tables) | n/a | <pre>map(object({<br>    associations     = list(string)<br>    propagations     = list(string)<br>    static_routes    = map(string)<br>    blackhole_routes = list(string)<br>  }))</pre> | n/a | yes |
