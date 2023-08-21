@@ -142,60 +142,14 @@ locals {
     }
   }
 
-  local_path = replace("${var.storage_path}", "/", "\\")
-
-  defaults = {
-    rules_ingress = [
-      {
-        type        = "ingress"
-        from_port   = var.ssh_port
-        to_port     = var.ssh_port
-        protocol    = "tcp"
-        cidr_blocks = [var.ssh_cidr]
-      },
-      {
-        type        = "ingress"
-        from_port   = 443
-        to_port     = 443
-        protocol    = "tcp"
-        cidr_blocks = ["0.0.0.0/0"]
-      },
-      {
-        type        = "ingress"
-        from_port   = 943
-        to_port     = 943
-        protocol    = "tcp"
-        cidr_blocks = ["0.0.0.0/0"]
-      },
-      {
-        type        = "ingress"
-        from_port   = 1194
-        to_port     = 1194
-        protocol    = "udp"
-        cidr_blocks = ["0.0.0.0/0"]
-      }
-    ]
-  }
-
-  input = {
-    rules_ingress = try(var.rules_ingress, [])
-  }
-
-  generated = {
-    rules_ingress = concat(local.defaults.rules_ingress, local.input.rules_ingress)
-  }
+  local_path = replace(var.storage_path, "/", "\\")
 
   #all_vpcs = merge(
   #  { for k, v in module.vpc : k => v.vpc_id },
   #  { "vpcVPN" = module.vpcVPN[0].vpc_id }
   #)
 
-  all_vpcs = var.deploy_ovp ? merge(
-    { for k, v in module.vpc : k => v.vpc_id },
-    { "vpcVPN" = module.vpcVPN[0].vpc_id }
-  ) : { for k, v in module.vpc : k => v.vpc_id }
 
-  vpc_references = toset([for server in values(var.ec2) : server.vpc])
   #vpc_ids = { for v in local.vpc_references : v => module[v].vpc_id }
 
   ### USER DATA LOCALS ###

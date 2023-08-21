@@ -4,7 +4,7 @@ resource "aws_ssm_association" "example" {
   name = "AWS-ConfigureAWSPackage"
   targets {
     key    = "InstanceIds"
-    values = [element(aws_instance.server.*.id, count.index)]
+    values = [element(aws_instance.server[*].id, count.index)]
   }
 
   parameters = {
