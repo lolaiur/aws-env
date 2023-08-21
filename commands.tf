@@ -1,3 +1,7 @@
+provider "null" {
+  # Configuration options
+}
+
 resource "null_resource" "provision_openvpn" {
   count = var.deploy_ovp ? 1 : 0
   triggers = {

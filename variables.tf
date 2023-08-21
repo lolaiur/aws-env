@@ -72,12 +72,6 @@ variable "ssh_port" {
   default     = 22
 }
 
-variable "ssh_cidr" {
-  type        = string
-  description = "ssh cidr"
-  default     = "0.0.0.0/0"
-}
-
 # Unused
 #variable "instance_type" {
 #  type        = string
@@ -100,17 +94,6 @@ variable "storage_path" {
 variable "private_key_path" {
   type    = string
   default = "./key.pub" # Update to the actual path
-}
-
-variable "rules_ingress" {
-  type = list(object({
-    from_port   = number
-    to_port     = number
-    protocol    = string
-    cidr_blocks = list(string)
-  }))
-  description = "list rule for security group"
-  default     = []
 }
 
 variable "deploy_dns" {
