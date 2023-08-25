@@ -8,10 +8,12 @@ deploy_vpn = false # Deploys site-to-site VPN (Use OpenVPN instead)
 deploy_ovp = true  # Deploys OpenVPN infrastructure (Complete)
 deploy_dns = true  # Deploys DNS & Updates A Records
 deploy_obi = true  # Deploys OBI & Routes to NATGW
+deploy_oig = true  # Deploys OBI with Fortigate (MAKE SURE deploy_obi IS SET TO FALSE!!!)
 
-os_user = "a_user_name"
-os_pass = "a_pass_word"
-
+os_user      = "a_user_name"
+os_pass      = "a_pass_word"
+ftg_ami      = "ami-059d36a8887155edb" # FortiGate-VM64-AWSONDEMAND build2360 (7.4.0) GA
+ftg_instance = "c6i.large" # Recomended? 
 
 my_ip = "xxx.xxx.xxx.xxx" # probably not needed
 
