@@ -103,15 +103,31 @@ variable "deploy_dns" {
 
 variable "os_user" {
   description = "Username you wish to pass into userdata"
-  type = string
+  type        = string
 }
 
 variable "os_pass" {
   description = "Password you wish to pass into userdata"
-  type = string
+  type        = string
+}
+
+variable "ftg_ami" {
+  description = "Value of FTG AMI to use"
+  type        = string
+}
+
+variable "ftg_instance" {
+  description = "Value of Instance Type for FTG"
+  type        = string
 }
 
 variable "deploy_obi" {
+  description = "Toggle to deploy or not deploy the OBI VPC"
+  type        = bool
+  default     = false
+}
+
+variable "deploy_oig" {
   description = "Toggle to deploy or not deploy the OBI VPC"
   type        = bool
   default     = false

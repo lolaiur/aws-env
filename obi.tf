@@ -166,6 +166,16 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "obitgw_attch" {
 }
 
 # Drop in 0/0 to OBI VPC in TGW Main RTB
+#resource "aws_ec2_transit_gateway_route" "obi" {
+#  count                          = var.deploy_obi ? 1 : 0
+#  destination_cidr_block         = "0.0.0.0/0"
+#  transit_gateway_route_table_id = aws_ec2_transit_gateway.transit_gateway.association_default_route_table_id
+#  transit_gateway_attachment_id  = aws_ec2_transit_gateway_vpc_attachment.obitgw_attch[0].id
+#
+#  depends_on = [aws_ec2_transit_gateway.transit_gateway]
+#
+#}
+
 resource "aws_ec2_transit_gateway_route" "obi" {
   count                          = var.deploy_obi ? 1 : 0
   destination_cidr_block         = "0.0.0.0/0"
@@ -173,5 +183,4 @@ resource "aws_ec2_transit_gateway_route" "obi" {
   transit_gateway_attachment_id  = aws_ec2_transit_gateway_vpc_attachment.obitgw_attch[0].id
 
   depends_on = [aws_ec2_transit_gateway.transit_gateway]
-
 }
