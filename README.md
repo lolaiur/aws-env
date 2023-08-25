@@ -91,6 +91,7 @@ private_key_path = "./scripts/openvpn/key" # <replace the .pem in the path with 
 
 | Name | Source | Version |
 |------|--------|---------|
+| <a name="module_OBI"></a> [OBI](#module\_OBI) | terraform-aws-modules/vpc/aws | ~> 5.0 |
 | <a name="module_cloudwan"></a> [cloudwan](#module\_cloudwan) | aws-ia/cloudwan/aws | ~>2 |
 | <a name="module_vpc"></a> [vpc](#module\_vpc) | terraform-aws-modules/vpc/aws | ~> 5.0 |
 | <a name="module_vpcOBI"></a> [vpcOBI](#module\_vpcOBI) | terraform-aws-modules/vpc/aws | ~> 5.0 |
@@ -104,13 +105,16 @@ private_key_path = "./scripts/openvpn/key" # <replace the .pem in the path with 
 | [aws_ec2_transit_gateway.transit_gateway](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/ec2_transit_gateway) | resource |
 | [aws_ec2_transit_gateway_route.blackhole_route](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/ec2_transit_gateway_route) | resource |
 | [aws_ec2_transit_gateway_route.obi](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/ec2_transit_gateway_route) | resource |
+| [aws_ec2_transit_gateway_route.obirt](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/ec2_transit_gateway_route) | resource |
 | [aws_ec2_transit_gateway_route.static_route](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/ec2_transit_gateway_route) | resource |
 | [aws_ec2_transit_gateway_route_table.route_table](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/ec2_transit_gateway_route_table) | resource |
 | [aws_ec2_transit_gateway_route_table_association.association](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/ec2_transit_gateway_route_table_association) | resource |
 | [aws_ec2_transit_gateway_route_table_propagation.propagations](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/ec2_transit_gateway_route_table_propagation) | resource |
+| [aws_ec2_transit_gateway_vpc_attachment.obi-tgw_attch](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/ec2_transit_gateway_vpc_attachment) | resource |
 | [aws_ec2_transit_gateway_vpc_attachment.obitgw_attch](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/ec2_transit_gateway_vpc_attachment) | resource |
 | [aws_ec2_transit_gateway_vpc_attachment.tgw_attch](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/ec2_transit_gateway_vpc_attachment) | resource |
 | [aws_ec2_transit_gateway_vpc_attachment.vpntgw_attch](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/ec2_transit_gateway_vpc_attachment) | resource |
+| [aws_eip.obi-eip](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/eip) | resource |
 | [aws_eip.obi_eip](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/eip) | resource |
 | [aws_eip.vpnserver_eip](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/eip) | resource |
 | [aws_eip_association.vpnserver_eip_association](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/eip_association) | resource |
@@ -118,46 +122,82 @@ private_key_path = "./scripts/openvpn/key" # <replace the .pem in the path with 
 | [aws_iam_role.ssm_role](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/iam_role) | resource |
 | [aws_iam_role_policy.ssm_policy](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/iam_role_policy) | resource |
 | [aws_iam_role_policy_attachment.ssm_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_instance.ftg_instance](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/instance) | resource |
 | [aws_instance.server](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/instance) | resource |
 | [aws_instance.vpnserver](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/instance) | resource |
+| [aws_internet_gateway.obi-igw](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/internet_gateway) | resource |
 | [aws_internet_gateway.obi_vpc_igw](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/internet_gateway) | resource |
 | [aws_internet_gateway.vpn_vpc_igw](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/internet_gateway) | resource |
 | [aws_key_pair.ec2_key](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/key_pair) | resource |
 | [aws_key_pair.vpn_ec2_key](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/key_pair) | resource |
 | [aws_kms_key.ssm_key](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/kms_key) | resource |
+| [aws_lb.gwlb](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/lb) | resource |
+| [aws_lb_listener.gwlb_listener](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/lb_listener) | resource |
+| [aws_lb_target_group.gwlb_tg](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/lb_target_group) | resource |
+| [aws_lb_target_group_attachment.ftg_tg_attachment](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/lb_target_group_attachment) | resource |
+| [aws_nat_gateway.obi_nat](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/nat_gateway) | resource |
 | [aws_nat_gateway.obi_nat_gw](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/nat_gateway) | resource |
+| [aws_network_interface.mgmt_eni](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/network_interface) | resource |
+| [aws_network_interface.south_eni](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/network_interface) | resource |
+| [aws_route.gwlb-def_to_nat](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/route) | resource |
+| [aws_route.gwlb-env_to_tgw](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/route) | resource |
+| [aws_route.inspect-def_to_nat](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/route) | resource |
 | [aws_route.intra](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/route) | resource |
 | [aws_route.intraOBI](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/route) | resource |
 | [aws_route.intraVPN](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/route) | resource |
+| [aws_route.mgmt-def_to_nat](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/route) | resource |
+| [aws_route.mgmt-env_to_tgw](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/route) | resource |
 | [aws_route.obivpc_to_my_ip](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/route) | resource |
 | [aws_route.public_return](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/route) | resource |
 | [aws_route.public_to_igw](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/route) | resource |
+| [aws_route.tgw-def_to_igw](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/route) | resource |
+| [aws_route.tgw-env_to_vpce](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/route) | resource |
 | [aws_route.tgw_sub_to_nat](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/route) | resource |
+| [aws_route.tgw_to_gwlbe](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/route) | resource |
 | [aws_route.vpn_vpc_to_my_ip](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/route) | resource |
 | [aws_route53_record.this](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/route53_record) | resource |
 | [aws_route53_zone.private_zone](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/route53_zone) | resource |
 | [aws_route53_zone_association.this](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/route53_zone_association) | resource |
+| [aws_route_table.gwlb](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/route_table) | resource |
+| [aws_route_table.igw](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/route_table) | resource |
+| [aws_route_table.inspection](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/route_table) | resource |
+| [aws_route_table.mgmt](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/route_table) | resource |
+| [aws_route_table.nat](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/route_table) | resource |
+| [aws_route_table.obi-tgw](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/route_table) | resource |
 | [aws_route_table.obitgw](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/route_table) | resource |
 | [aws_route_table.public_subnet_route_table](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/route_table) | resource |
 | [aws_route_table.tgw](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/route_table) | resource |
 | [aws_route_table.vpntgw](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/route_table) | resource |
+| [aws_route_table_association.gwlb](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/route_table_association) | resource |
+| [aws_route_table_association.inspection](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/route_table_association) | resource |
+| [aws_route_table_association.mgmt](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/route_table_association) | resource |
+| [aws_route_table_association.nat](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/route_table_association) | resource |
+| [aws_route_table_association.obi-tgw](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/route_table_association) | resource |
 | [aws_route_table_association.obitgw](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/route_table_association) | resource |
 | [aws_route_table_association.public_subnet_rtb_assoc](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/route_table_association) | resource |
 | [aws_route_table_association.tgw](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/route_table_association) | resource |
 | [aws_route_table_association.vpntgw](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/route_table_association) | resource |
 | [aws_security_group.ec2](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/security_group) | resource |
 | [aws_security_group.endpoint_sg](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/security_group) | resource |
+| [aws_security_group.sg](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/security_group) | resource |
 | [aws_security_group.vpnec2](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/security_group) | resource |
 | [aws_ssm_association.example](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/ssm_association) | resource |
 | [aws_ssm_document.ssm_document](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/ssm_document) | resource |
 | [aws_ssm_service_setting.default_host_management](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/ssm_service_setting) | resource |
+| [aws_subnet.gwlb](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/subnet) | resource |
+| [aws_subnet.inspection](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/subnet) | resource |
+| [aws_subnet.mgmt](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/subnet) | resource |
+| [aws_subnet.nat](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/subnet) | resource |
+| [aws_subnet.obi-tgw](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/subnet) | resource |
 | [aws_subnet.obitgw](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/subnet) | resource |
 | [aws_subnet.public_subnet](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/subnet) | resource |
 | [aws_subnet.tgw](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/subnet) | resource |
 | [aws_subnet.vpntgw](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/subnet) | resource |
 | [aws_vpc_endpoint.ec2messages](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/vpc_endpoint) | resource |
+| [aws_vpc_endpoint.gwlbe](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/vpc_endpoint) | resource |
 | [aws_vpc_endpoint.ssm](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/vpc_endpoint) | resource |
 | [aws_vpc_endpoint.ssmmessages](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/vpc_endpoint) | resource |
+| [aws_vpc_endpoint_service.gwlb](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/vpc_endpoint_service) | resource |
 | [aws_vpn_connection.vpn_connection](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/vpn_connection) | resource |
 | [null_resource.openvpn_adduser](https://registry.terraform.io/providers/hashicorp/null/3.2.1/docs/resources/resource) | resource |
 | [null_resource.openvpn_download_configurations](https://registry.terraform.io/providers/hashicorp/null/3.2.1/docs/resources/resource) | resource |
@@ -179,10 +219,13 @@ private_key_path = "./scripts/openvpn/key" # <replace the .pem in the path with 
 | <a name="input_deploy_dns"></a> [deploy\_dns](#input\_deploy\_dns) | n/a | `bool` | `false` | no |
 | <a name="input_deploy_ep"></a> [deploy\_ep](#input\_deploy\_ep) | Toggle to deploy the VPC endpoints | `bool` | `false` | no |
 | <a name="input_deploy_obi"></a> [deploy\_obi](#input\_deploy\_obi) | Toggle to deploy or not deploy the OBI VPC | `bool` | `false` | no |
+| <a name="input_deploy_oig"></a> [deploy\_oig](#input\_deploy\_oig) | Toggle to deploy or not deploy the OBI VPC | `bool` | `false` | no |
 | <a name="input_deploy_ovp"></a> [deploy\_ovp](#input\_deploy\_ovp) | n/a | `bool` | `false` | no |
 | <a name="input_deploy_ssm"></a> [deploy\_ssm](#input\_deploy\_ssm) | Whether to deploy SSM related resources | `bool` | `false` | no |
 | <a name="input_deploy_vpn"></a> [deploy\_vpn](#input\_deploy\_vpn) | n/a | `bool` | `false` | no |
 | <a name="input_ec2"></a> [ec2](#input\_ec2) | Configuration for EC2 instances | <pre>map(object({<br>    vpc = string<br>    az  = string<br>    os  = string<br>    ud  = string<br>  }))</pre> | n/a | yes |
+| <a name="input_ftg_ami"></a> [ftg\_ami](#input\_ftg\_ami) | Value of FTG AMI to use | `string` | n/a | yes |
+| <a name="input_ftg_instance"></a> [ftg\_instance](#input\_ftg\_instance) | Value of Instance Type for FTG | `string` | n/a | yes |
 | <a name="input_my_ip"></a> [my\_ip](#input\_my\_ip) | n/a | `string` | n/a | yes |
 | <a name="input_os_pass"></a> [os\_pass](#input\_os\_pass) | Password you wish to pass into userdata | `string` | n/a | yes |
 | <a name="input_os_user"></a> [os\_user](#input\_os\_user) | Username you wish to pass into userdata | `string` | n/a | yes |
