@@ -21,6 +21,13 @@
 #   description = "The ID of the VPN VPC"
 # }
 
+#output "vpceip" {
+#  value = aws_vpc_endpoint.gwlbe[0]
+#}
+#
+#output "vpceip2" {
+#  value = data.aws_network_interface.endpoint.private_ip
+#}
 
 output "server_details" {
   value = { for k, v in var.ec2 : k => {

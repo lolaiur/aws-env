@@ -6,28 +6,18 @@ data "aws_caller_identity" "current" {}
 
 data "aws_region" "current" {}
 
-# data "aws_subnet_ids" "selected" {
-#   vpc_id = module.vpc["${each.value.vpc}"].vpc_id
-# }
 
-#Unused
-#data "aws_ami" "amazon_linux" {
-#  most_recent = true
-#
-#  filter {
-#    name   = "name"
-#    values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]
-#  }
-#
-#  filter {
-#    name   = "block-device-mapping.volume-type"
-#    values = ["gp2"]
-#  }
-#
-#  filter {
-#    name   = "virtualization-type"
-#    values = ["hvm"]
-#  }
-#
-#  owners = ["099720109477"] # Canonical
-#}
+# Collects GWLBe IP for FortiOS remote_ip
+data "aws_network_interface" "endpoint" {
+  count = var.deploy_oig ? 1 : 0
+  id    = tolist(aws_vpc_endpoint.gwlbe[0].network_interface_ids)[0]
+}
+
+
+data "aws_network_interface" "gwlb_eni" {
+  count = var.deploy_oig ? 1 : 0
+  filter {
+    name   = "description"
+    values = ["ELB gwy/${aws_lb.gwlb[0].name}/*"]
+  }
+}

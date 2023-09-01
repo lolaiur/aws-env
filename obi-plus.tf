@@ -323,25 +323,25 @@ resource "aws_instance" "ftg_instance" {
     device_index         = 1
   }
 
-  #network_interface {
-  #  network_interface_id = aws_network_interface.north_eni[0].id
-  #  device_index         = 2
-  #}
+  network_interface {
+    network_interface_id = aws_network_interface.tap_eni[0].id
+    device_index         = 2
+  }
 
   tags = {
     Name = "OBI.FTG"
   }
 }
 
-#resource "aws_network_interface" "north_eni" {
-#  count           = var.deploy_oig ? 1 : 0
-#  subnet_id       = aws_subnet.north[0].id
-#  security_groups = [aws_security_group.sg[0].id] # Replace with your security group
-#
-#  tags = {
-#    Name = "FTG-North.eni"
-#  }
-#}
+resource "aws_network_interface" "tap_eni" {
+  count           = var.deploy_oig ? 1 : 0
+  subnet_id       = module.OBI[0].intra_subnets[0]
+  security_groups = [aws_security_group.sg[0].id] # Replace with your security group
+
+  tags = {
+    Name = "FTG-North.eni"
+  }
+}
 
 resource "aws_network_interface" "south_eni" {
   count           = var.deploy_oig ? 1 : 0

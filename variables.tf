@@ -132,3 +132,16 @@ variable "deploy_oig" {
   type        = bool
   default     = false
 }
+
+variable "deploy_cfg" {
+  description = "Toggle to deploy or not configure the OBI Forti"
+  type        = bool
+  default     = false
+}
+
+variable "forti_token" {
+  description = "Token generated from FortiOS for API User"
+  type        = string
+  default     = ""
+
+}
