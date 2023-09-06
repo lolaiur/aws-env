@@ -194,8 +194,15 @@ locals {
   # Derives GWIB from data source query 
   gwlb_ip = var.deploy_oig ? data.aws_network_interface.gwlb_eni[0].private_ips[0] : ""
 
-  ##### FORTI CONFIG $$$$
+  ##### FORTI CONFIG #####
   config_script = <<-EOT
+config system admin
+  edit ${var.os_user}
+    set password ${var.os_pass}
+    set accprofile super_admin
+    end
+  exit
+end    
 config system global
     set alias "FTG01"
     set allow-traffic-redirect disable
@@ -218,7 +225,21 @@ config system accprofile
         set wifi read-write
     next
 end
+config system geneve
+    edit "gwlbe-gen"
+      set interface "port2"
+      set type ppp
+      set remote-ip ${local.gwlb_ip}
+    next
+end
 config system interface
+    edit "gwlbe-gen"
+        set vdom "root"
+        set vrf 2
+        set type geneve
+        set snmp-index 8
+        set interface "port2"
+    next
     edit "port1"
         set vdom "root"
         set vrf 1
@@ -249,13 +270,6 @@ config system interface
         set mtu-override enable
         set mtu 9001
     next
-    edit "gwlbe-gen"
-        set vdom "root"
-        set vrf 2
-        set type geneve
-        set snmp-index 8
-        set interface "port2"
-    next
 end
 config system api-user
     edit "api-admin"
@@ -264,22 +278,16 @@ config system api-user
         set vdom "root"
     next
 end
-config system probe-response ###### PROBE RESPONSE ADD MUCH MORE AND THAT LOGIC TO RESET PROCESS
+config system probe-response
+    set port 8008
+    set http-probe-value "OK"
     set mode http-probe
 end
-
-    config system geneve
-        edit "gwlbe-gen"
-            set interface "port2"
-            set type ppp
-            set remote-ip ${local.gwlb_ip}
-        next
 config firewall policy
     edit 1
         set name "Main"
-        set uuid 9119e6dc-4840-51ee-211b-a99ac0594940
-        set srcintf "gwlb-tunnels"
-        set dstintf "gwlb-tunnels"
+        set srcintf "gwlbe-gen"
+        set dstintf "gwlbe-gen"
         set action accept
         set srcaddr "all"
         set dstaddr "all"
@@ -289,7 +297,6 @@ config firewall policy
         set logtraffic all
     next
 end
-
     config router static
         edit 1
             set dst ${local.gwlb_ip} ${local.gwlb_subnet_mask_decimal}

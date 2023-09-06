@@ -328,6 +328,8 @@ resource "aws_instance" "ftg_instance" {
     device_index         = 2
   }
 
+  user_data = data.template_file.ftg01[0].rendered
+
   tags = {
     Name = "OBI.FTG"
   }

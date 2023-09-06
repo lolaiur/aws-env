@@ -7,11 +7,17 @@ deploy_ep  = false # Creates SSM Required Endpoints (Complete)
 deploy_vpn = false # Deploys site-to-site VPN (Use OpenVPN instead)
 deploy_ovp = true  # Deploys OpenVPN infrastructure (Complete)
 deploy_dns = true  # Deploys DNS & Updates A Records
-deploy_obi = true  # Deploys OBI & Routes to NATGW
+deploy_obi = false # Deploys OBI & Routes to NATGW
+deploy_oig = true  # Deploys OBI & Routes to NATGW
+deploy_cfg = false # Deploys FortiOS Config <<< Not working because provider can't be conditional :(
 
 os_user = "a_user_name"
 os_pass = "a_pass_word"
 
+# forti stuff 
+ftg_ami      = "ami-059d36a8887155edb" # FortiGate-VM64-AWSONDEMAND build2360 (7.4.0) GA
+ftg_instance = "c4.large"
+forti_token  = "G184Nhwjdn88sGfHsrGtd6H5k6qfNy"
 
 my_ip = "xxx.xxx.xxx.xxx" # probably not needed
 
@@ -62,7 +68,9 @@ ec2 = { #creat all the servers you need, in whatever vpc you wish, to whatever A
 }
 
 public_key       = "ssh-rsa your public key"
-admin_user       = "whateveryouwant"
+
+## OpenVPN Things
+admin_user       = "lolaiur"
 storage_path     = "./scripts/openvpn"
 private_key_path = "./scripts/openvpn/key" # <replace the .pem in the path with your private key.  This is used in the null_resources for the SSH connectcfb
 ```

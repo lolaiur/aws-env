@@ -14,10 +14,17 @@ data "aws_network_interface" "endpoint" {
 }
 
 
+# Gets GWLB IP for Forti Routing
 data "aws_network_interface" "gwlb_eni" {
   count = var.deploy_oig ? 1 : 0
   filter {
     name   = "description"
     values = ["ELB gwy/${aws_lb.gwlb[0].name}/*"]
   }
+}
+
+# Generates FortiOS Config
+data "template_file" "ftg01" {
+  count    = var.deploy_oig ? 1 : 0
+  template = local.config_script
 }
