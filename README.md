@@ -93,6 +93,7 @@ private_key_path = "./scripts/openvpn/key" # <replace the .pem in the path with 
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | 5.13.1 |
 | <a name="provider_null"></a> [null](#provider\_null) | 3.2.1 |
+| <a name="provider_template"></a> [template](#provider\_template) | n/a |
 
 ## Modules
 
@@ -146,6 +147,7 @@ private_key_path = "./scripts/openvpn/key" # <replace the .pem in the path with 
 | [aws_nat_gateway.obi_nat_gw](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/nat_gateway) | resource |
 | [aws_network_interface.mgmt_eni](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/network_interface) | resource |
 | [aws_network_interface.south_eni](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/network_interface) | resource |
+| [aws_network_interface.tap_eni](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/network_interface) | resource |
 | [aws_route.gwlb-def_to_nat](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/route) | resource |
 | [aws_route.gwlb-env_to_tgw](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/route) | resource |
 | [aws_route.inspect-def_to_nat](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/route) | resource |
@@ -214,8 +216,11 @@ private_key_path = "./scripts/openvpn/key" # <replace the .pem in the path with 
 | [null_resource.provision_openvpn](https://registry.terraform.io/providers/hashicorp/null/3.2.1/docs/resources/resource) | resource |
 | [aws_availability_zones.available](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/data-sources/availability_zones) | data source |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/data-sources/caller_identity) | data source |
+| [aws_network_interface.endpoint](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/data-sources/network_interface) | data source |
+| [aws_network_interface.gwlb_eni](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/data-sources/network_interface) | data source |
 | [aws_networkmanager_core_network_policy_document.policy](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/data-sources/networkmanager_core_network_policy_document) | data source |
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/data-sources/region) | data source |
+| [template_file.ftg01](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
 
 ## Inputs
 
@@ -223,6 +228,7 @@ private_key_path = "./scripts/openvpn/key" # <replace the .pem in the path with 
 |------|-------------|------|---------|:--------:|
 | <a name="input_admin_user"></a> [admin\_user](#input\_admin\_user) | admin user | `string` | `"openvpn"` | no |
 | <a name="input_create_cgw"></a> [create\_cgw](#input\_create\_cgw) | n/a | `bool` | `false` | no |
+| <a name="input_deploy_cfg"></a> [deploy\_cfg](#input\_deploy\_cfg) | Toggle to deploy or not configure the OBI Forti | `bool` | `false` | no |
 | <a name="input_deploy_dns"></a> [deploy\_dns](#input\_deploy\_dns) | n/a | `bool` | `false` | no |
 | <a name="input_deploy_ep"></a> [deploy\_ep](#input\_deploy\_ep) | Toggle to deploy the VPC endpoints | `bool` | `false` | no |
 | <a name="input_deploy_obi"></a> [deploy\_obi](#input\_deploy\_obi) | Toggle to deploy or not deploy the OBI VPC | `bool` | `false` | no |
@@ -231,6 +237,7 @@ private_key_path = "./scripts/openvpn/key" # <replace the .pem in the path with 
 | <a name="input_deploy_ssm"></a> [deploy\_ssm](#input\_deploy\_ssm) | Whether to deploy SSM related resources | `bool` | `false` | no |
 | <a name="input_deploy_vpn"></a> [deploy\_vpn](#input\_deploy\_vpn) | n/a | `bool` | `false` | no |
 | <a name="input_ec2"></a> [ec2](#input\_ec2) | Configuration for EC2 instances | <pre>map(object({<br>    vpc = string<br>    az  = string<br>    os  = string<br>    ud  = string<br>  }))</pre> | n/a | yes |
+| <a name="input_forti_token"></a> [forti\_token](#input\_forti\_token) | Token generated from FortiOS for API User | `string` | `""` | no |
 | <a name="input_ftg_ami"></a> [ftg\_ami](#input\_ftg\_ami) | Value of FTG AMI to use | `string` | n/a | yes |
 | <a name="input_ftg_instance"></a> [ftg\_instance](#input\_ftg\_instance) | Value of Instance Type for FTG | `string` | n/a | yes |
 | <a name="input_my_ip"></a> [my\_ip](#input\_my\_ip) | n/a | `string` | n/a | yes |
@@ -246,7 +253,5 @@ private_key_path = "./scripts/openvpn/key" # <replace the .pem in the path with 
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| <a name="output_server_details"></a> [server\_details](#output\_server\_details) | n/a |
+No outputs.
 <!-- END_TF_DOCS -->
