@@ -2,7 +2,7 @@ resource "aws_instance" "server" {
   for_each = var.ec2
 
   ami                    = local.amis[each.value.os]
-  instance_type          = "t2.micro"
+  instance_type          = "t3.medium"
   subnet_id              = module.vpc["${data.aws_region.current.name}-${each.value.vpc}"].intra_subnets[tonumber(each.value.az) - 1]
   iam_instance_profile   = var.deploy_ssm ? aws_iam_instance_profile.ssm[0].name : null
   vpc_security_group_ids = [aws_security_group.ec2["${data.aws_region.current.name}-${each.value.vpc}"].id]
