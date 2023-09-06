@@ -7,9 +7,6 @@ deploy_ep  = false # Creates SSM Required Endpoints (Complete)
 deploy_vpn = false # Deploys site-to-site VPN (Use OpenVPN instead)
 deploy_ovp = true  # Deploys OpenVPN infrastructure (Complete)
 deploy_dns = true  # Deploys DNS & Updates A Records
-deploy_obi = false # Deploys OBI & Routes to NATGW
-deploy_oig = true  # Deploys OBI & Routes to NATGW
-deploy_cfg = false # Deploys FortiOS Config <<< Not working because provider can't be conditional :(
 
 os_user = "a_user_name"
 os_pass = "a_pass_word"
@@ -18,6 +15,8 @@ os_pass = "a_pass_word"
 ftg_ami      = "ami-059d36a8887155edb" # FortiGate-VM64-AWSONDEMAND build2360 (7.4.0) GA
 ftg_instance = "c4.large"
 forti_token  = "G184Nhwjdn88sGfHsrGtd6H5k6qfNy"
+
+
 
 my_ip = "xxx.xxx.xxx.xxx" # probably not needed
 
