@@ -14,7 +14,7 @@ os_pass = "a_pass_word"
 # forti stuff 
 ftg_ami      = "ami-059d36a8887155edb" # FortiGate-VM64-AWSONDEMAND build2360 (7.4.0) GA
 ftg_instance = "c4.large"
-forti_token  = "G184Nhwjdn88sGfHsrGtd6H5k6qfNy"
+forti_token  = "a_long_token"
 
 
 
