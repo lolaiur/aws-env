@@ -8,7 +8,7 @@ deploy_vpn = false # Deploys site-to-site VPN (Use OpenVPN instead)
 deploy_ovp = true  # Deploys OpenVPN infrastructure (Complete)
 deploy_dns = true  # Deploys DNS & Updates A Records
 deploy_obi = false # Deploys OBI & Routes to NATGW
-deploy_oig = true  # Deploys OBI & Routes to NATGW
+deploy_oig = true  # Deploys OBI & Routes to NATGW using FortiGates which are autoconfigured
 deploy_cfg = false # Deploys FortiOS Config <<< Not working because provider can't be conditional :(
 
 # Things used for OS deployments

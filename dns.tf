@@ -1,3 +1,6 @@
+
+### Creates DNS solution within AWS and registers EC2 A Records to resolve within DNS
+
 resource "aws_route53_zone" "private_zone" {
   count = var.deploy_dns ? 1 : 0
   name  = "aiur.com"

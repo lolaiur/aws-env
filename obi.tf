@@ -1,3 +1,6 @@
+
+### Deploys OBI Solution through a NAT Gateway, simply and effective
+
 module "vpcOBI" {
   count = var.deploy_obi ? 1 : 0
 
