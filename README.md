@@ -116,6 +116,7 @@ my_ip = "xxx.xxx.xxx.xxx" # probably not needed
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | 5.13.1 |
 | <a name="provider_null"></a> [null](#provider\_null) | 3.2.1 |
+| <a name="provider_template"></a> [template](#provider\_template) | n/a |
 
 ## Modules
 
@@ -237,15 +238,21 @@ my_ip = "xxx.xxx.xxx.xxx" # probably not needed
 | [null_resource.provision_openvpn](https://registry.terraform.io/providers/hashicorp/null/3.2.1/docs/resources/resource) | resource |
 | [aws_availability_zones.available](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/data-sources/availability_zones) | data source |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/data-sources/caller_identity) | data source |
+| [aws_network_interface.endpoint](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/data-sources/network_interface) | data source |
+| [aws_network_interface.gwlb_eni](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/data-sources/network_interface) | data source |
+| [aws_network_interfaces.gwlb_enis](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/data-sources/network_interfaces) | data source |
 | [aws_networkmanager_core_network_policy_document.policy](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/data-sources/networkmanager_core_network_policy_document) | data source |
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/data-sources/region) | data source |
+| [template_file.ftg_config](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_admin_user"></a> [admin\_user](#input\_admin\_user) | admin user | `string` | `"openvpn"` | no |
+| <a name="input_azs"></a> [azs](#input\_azs) | List of Availability Zones | `list(string)` | <pre>[<br>  "us-west-2a",<br>  "us-west-2b",<br>  "us-west-2c"<br>]</pre> | no |
 | <a name="input_create_cgw"></a> [create\_cgw](#input\_create\_cgw) | n/a | `bool` | `false` | no |
+| <a name="input_deploy_cfg"></a> [deploy\_cfg](#input\_deploy\_cfg) | Toggle to deploy or not configure the OBI Forti | `bool` | `false` | no |
 | <a name="input_deploy_dns"></a> [deploy\_dns](#input\_deploy\_dns) | n/a | `bool` | `false` | no |
 | <a name="input_deploy_ep"></a> [deploy\_ep](#input\_deploy\_ep) | Toggle to deploy the VPC endpoints | `bool` | `false` | no |
 | <a name="input_deploy_obi"></a> [deploy\_obi](#input\_deploy\_obi) | Toggle to deploy or not deploy the OBI VPC | `bool` | `false` | no |
@@ -254,9 +261,12 @@ my_ip = "xxx.xxx.xxx.xxx" # probably not needed
 | <a name="input_deploy_ssm"></a> [deploy\_ssm](#input\_deploy\_ssm) | Whether to deploy SSM related resources | `bool` | `false` | no |
 | <a name="input_deploy_vpn"></a> [deploy\_vpn](#input\_deploy\_vpn) | n/a | `bool` | `false` | no |
 | <a name="input_ec2"></a> [ec2](#input\_ec2) | Configuration for EC2 instances | <pre>map(object({<br>    vpc = string<br>    az  = string<br>    os  = string<br>    ud  = string<br>  }))</pre> | n/a | yes |
+| <a name="input_forti_token"></a> [forti\_token](#input\_forti\_token) | Token generated from FortiOS for API User | `string` | `""` | no |
+| <a name="input_ftg"></a> [ftg](#input\_ftg) | Defines number of FTGs to deploy, which az, and if they should be placed into target group | <pre>map(object({<br>    az = string # Availability Zone index as a string<br>    tg = string # Whether to add to target group: 'y' or 'n'<br>  }))</pre> | n/a | yes |
 | <a name="input_ftg_ami"></a> [ftg\_ami](#input\_ftg\_ami) | Value of FTG AMI to use | `string` | n/a | yes |
 | <a name="input_ftg_instance"></a> [ftg\_instance](#input\_ftg\_instance) | Value of Instance Type for FTG | `string` | n/a | yes |
 | <a name="input_my_ip"></a> [my\_ip](#input\_my\_ip) | n/a | `string` | n/a | yes |
+| <a name="input_obi"></a> [obi](#input\_obi) | The CIDRs for OBI setup | <pre>object({<br>    cidr       = string<br>    intra      = list(string)<br>    mgmt       = list(string)<br>    inspection = list(string)<br>    nat        = list(string)<br>    gwlb       = list(string)<br>    tgw        = list(string)<br>  })</pre> | n/a | yes |
 | <a name="input_os_pass"></a> [os\_pass](#input\_os\_pass) | Password you wish to pass into userdata | `string` | n/a | yes |
 | <a name="input_os_user"></a> [os\_user](#input\_os\_user) | Username you wish to pass into userdata | `string` | n/a | yes |
 | <a name="input_private_key_path"></a> [private\_key\_path](#input\_private\_key\_path) | n/a | `string` | `"./key.pub"` | no |
@@ -266,10 +276,9 @@ my_ip = "xxx.xxx.xxx.xxx" # probably not needed
 | <a name="input_ssh_user"></a> [ssh\_user](#input\_ssh\_user) | user ssh | `string` | `"ec2-user"` | no |
 | <a name="input_storage_path"></a> [storage\_path](#input\_storage\_path) | storage path keys to local | `string` | `"./openvpn"` | no |
 | <a name="input_vpcs"></a> [vpcs](#input\_vpcs) | Map of regions to VPCs to create | `any` | `{}` | no |
+| <a name="input_x_zone_lb"></a> [x\_zone\_lb](#input\_x\_zone\_lb) | Toggles Cross Zone LB on GWLB | `bool` | `false` | no |
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| <a name="output_server_details"></a> [server\_details](#output\_server\_details) | n/a |
+No outputs.
 <!-- END_TF_DOCS -->
