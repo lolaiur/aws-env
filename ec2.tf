@@ -1,3 +1,7 @@
+
+### Dynamically creates EC2 instances into specificed VPCs and AZs with two choosable OS types
+
+
 resource "aws_instance" "server" {
   for_each = var.ec2
 

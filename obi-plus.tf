@@ -1,3 +1,6 @@
+
+### Deploys OBI Solution with Fortigates, dynamically, to however many AZs that are defined within the params.tfvars under obi map
+
 ##################
 ##              ##
 ##  VPC         ##
