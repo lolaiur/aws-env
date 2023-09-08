@@ -143,5 +143,37 @@ variable "forti_token" {
   description = "Token generated from FortiOS for API User"
   type        = string
   default     = ""
+}
 
+variable "obi" {
+  description = "The CIDRs for OBI setup"
+  type = object({
+    cidr       = string
+    intra      = list(string)
+    mgmt       = list(string)
+    inspection = list(string)
+    nat        = list(string)
+    gwlb       = list(string)
+    tgw        = list(string)
+  })
+}
+
+variable "ftg" {
+  description = "Defines number of FTGs to deploy, which az, and if they should be placed into target group"
+  type = map(object({
+    az = string # Availability Zone index as a string
+    tg = string # Whether to add to target group: 'y' or 'n'
+  }))
+}
+
+variable "azs" {
+  description = "List of Availability Zones"
+  type        = list(string)
+  default     = ["us-west-2a", "us-west-2b", "us-west-2c"]
+}
+
+variable "x_zone_lb" {
+  description = "Toggles Cross Zone LB on GWLB"
+  type        = bool
+  default     = false
 }
