@@ -7,7 +7,11 @@ deploy_ep  = false # Creates SSM Required Endpoints (Complete)
 deploy_vpn = false # Deploys site-to-site VPN (Use OpenVPN instead)
 deploy_ovp = true  # Deploys OpenVPN infrastructure (Complete)
 deploy_dns = true  # Deploys DNS & Updates A Records
+deploy_obi = false # Deploys OBI & Routes to NATGW
+deploy_oig = true  # Deploys OBI & Routes to NATGW
+deploy_cfg = false # Deploys FortiOS Config <<< Not working because provider can't be conditional :(
 
+# Things used for OS deployments
 os_user = "a_user_name"
 os_pass = "a_pass_word"
 
@@ -16,11 +20,27 @@ ftg_ami      = "ami-059d36a8887155edb" # FortiGate-VM64-AWSONDEMAND build2360 (7
 ftg_instance = "c4.large"
 forti_token  = "a_long_token"
 
+# OBI Specifics
+x_zone_lb = false # Sets if you want Cross AZ LB (Can be costly!)
+obi = { # Defines OBI VPC. Remove/Add to list for more/less AZs
+  cidr       = "10.253.0.0/16"
+  intra      = ["10.253.0.0/24", "10.253.1.0/24", "10.253.2.0/24"]
+  mgmt       = ["10.253.3.0/24", "10.253.4.0/24", "10.253.5.0/24"]
+  inspection = ["10.253.6.0/24", "10.253.7.0/24", "10.253.8.0/24"]
+  nat        = ["10.253.9.0/24", "10.253.10.0/24", "10.253.11.0/24"]
+  gwlb       = ["10.253.12.0/24", "10.253.13.0/24", "10.253.14.0/24"]
+  tgw        = ["10.253.15.0/24", "10.253.16.0/24", "10.253.17.0/24"]
+}
 
+# Declares how many FTGs to deploy, which AZ to place them in and if they should be in a TG, or not
+ftg = {
+  ftg01 = { az = "0", tg = "n" }
+  ftg02 = { az = "1", tg = "y" }
+  ftg03 = { az = "2", tg = "n" }
+}
 
-my_ip = "xxx.xxx.xxx.xxx" # probably not needed
-
-vpcs = { # Create VPCs!
+# Dynamically create typical VPCs
+vpcs = {
   "us-east-1" = {
     "vpc-01" = {
       cidr   = "10.10.0.0/16"
@@ -28,18 +48,29 @@ vpcs = { # Create VPCs!
       tgw    = ["10.10.10.0/24", "10.10.20.0/24"]
       env    = "dev"
     }
-    "vpc-02" = {
-      cidr   = "10.20.0.0/16"
-      subnet = ["10.20.0.0/24"]
-      tgw    = ["10.20.10.0/24"]
-      env    = "prd"
-    }
-    "vpc-03" = {
-      cidr   = "10.30.0.0/16"
-      subnet = ["10.30.0.0/24", "10.30.1.0/24"]
-      tgw    = ["10.30.10.0/24", "10.30.20.0/24"]
-      env    = "prd"
+    #"vpc-02" = {
+    #  cidr   = "10.20.0.0/16"
+    #  subnet = ["10.20.0.0/24"]
+    #  tgw    = ["10.20.10.0/24"]
+    #  env    = "prd"
+    #}
+    #"vpc-03" = {
+    #  cidr   = "10.30.0.0/16"
+    #  subnet = ["10.30.0.0/24", "10.30.1.0/24"]
+    #  tgw    = ["10.30.10.0/24", "10.30.20.0/24"]
+    #  env    = "prd"
+    #}
   }
+}
+
+# Dynamically create EC2s in specific VPCs, Assigned to a specific AZ, which OS to use, and if userdata (UD) should be applied
+ec2 = {
+  server01 = { vpc = "vpc-01", az = "1", os = "win", ud = "Y" }
+  #server02 = { vpc = "vpc-01", az = "1", os = "win", ud = "Y" }
+  #server03 = { vpc = "vpc-01", az = "1", os = "win", ud = "Y" }
+  #server04 = { vpc = "vpc-01", az = "1", os = "lnx", ud = "Y" }
+  #server05 = { vpc = "vpc-02", az = "1", os = "lnx", ud = "Y" }
+  #server06 = { vpc = "vpc-02", az = "1", os = "win", ud = "Y" }
 }
 
 route_tables = { # Default behavior associates & propgates to default rtb
@@ -55,23 +86,15 @@ route_tables = { # Default behavior associates & propgates to default rtb
   }
 }
 
-ec2 = { #creat all the servers you need, in whatever vpc you wish, to whatever AZ you desire, with any OS, and Y/N Userdata deployment 
-  server01 = { vpc = "vpc-01", az = "1", os = "win", ud = "Y" }
-  server02 = { vpc = "vpc-01", az = "2", os = "lnx", ud = "Y" }
-  server03 = { vpc = "vpc-03", az = "2", os = "win", ud = "Y" }
-  server04 = { vpc = "vpc-02", az = "1", os = "lnx", ud = "Y" }
-  server05 = { vpc = "vpc-02", az = "1", os = "lnx", ud = "Y" }
-  server06 = { vpc = "vpc-02", az = "1", os = "win", ud = "Y" }
-# server07 = { vpc = "vpc-02", az = "1", os = "lnx" }
-
-}
 
 public_key       = "ssh-rsa your public key"
 
 ## OpenVPN Things
-admin_user       = "lolaiur"
+admin_user       = "another_user_name"
 storage_path     = "./scripts/openvpn"
 private_key_path = "./scripts/openvpn/key" # <replace the .pem in the path with your private key.  This is used in the null_resources for the SSH connectcfb
+
+my_ip = "xxx.xxx.xxx.xxx" # probably not needed
 ```
 
 <!--- BEGIN_TF_DOCS --->
