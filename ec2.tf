@@ -15,7 +15,7 @@ resource "aws_instance" "server" {
   user_data = each.value.ud == "Y" ? (each.value.os == "win" ? local.windows_userdata : local.linux_userdata) : null
 
   tags = {
-    Name = each.key
+    Name = "${each.key}@.${each.value.vpc}.az${each.value.az}"
   }
   depends_on = [module.vpc]
 }

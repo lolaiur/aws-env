@@ -177,3 +177,9 @@ variable "x_zone_lb" {
   type        = bool
   default     = false
 }
+
+variable "dns_name" {
+  description = "DNS name to use for the DNS zone"
+  type        = string
+  default     = "your-own"
+}

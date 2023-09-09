@@ -3,7 +3,7 @@
 
 resource "aws_route53_zone" "private_zone" {
   count = var.deploy_dns ? 1 : 0
-  name  = "aiur.com"
+  name  = "${var.dns_name}.com"
   vpc {
     vpc_id = module.vpcVPN[0].vpc_id
   }
@@ -26,7 +26,7 @@ resource "aws_route53_zone_association" "this" {
 resource "aws_route53_record" "this" {
   for_each = var.deploy_dns ? var.ec2 : {}
   zone_id  = aws_route53_zone.private_zone[0].id
-  name     = "${each.key}.aiur.com"
+  name     = "${each.key}.${var.dns_name}.com"
   type     = "A"
   records  = [aws_instance.server[each.key].private_ip]
   ttl      = 300
