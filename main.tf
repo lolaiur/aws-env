@@ -36,7 +36,7 @@ resource "aws_subnet" "tgw" {
   availability_zone = module.vpc["${each.value.region}-${each.value.vpc_name}"].azs[each.value.index]
 
   tags = {
-    "Name" = "${each.value.region}-${each.value.vpc_name}-${module.vpc["${each.value.region}-${each.value.vpc_name}"].azs[each.value.index]}.tgw.sub"
+    "Name" = "${each.value.vpc_name}.${module.vpc["${each.value.region}-${each.value.vpc_name}"].azs[each.value.index]}.tgw.sub"
     "Env"  = each.value.vpc_data.env
   }
 }
@@ -64,7 +64,7 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "tgw_attch" {
   vpc_id             = module.vpc["${each.value.region}-${each.value.vpc_name}"].vpc_id
 
   tags = {
-    "Name" = "${each.value.region}-${each.value.vpc_name}-tgw-attch"
+    "Name" = "${each.value.vpc_name}-tgw-attch"
   }
 }
 

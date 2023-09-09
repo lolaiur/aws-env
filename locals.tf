@@ -176,7 +176,7 @@ locals {
     sudo systemctl restart sshd
   EOT
 
-  eni_map = { for idx, key in sort(keys(var.ftg)) : key => data.aws_network_interfaces.gwlb_enis[0].ids[idx] }
+  eni_map = var.deploy_oig ? { for idx, key in sort(keys(var.ftg)) : key => data.aws_network_interfaces.gwlb_enis[0].ids[idx] } : {}
 
   az_mapping = {
     "0" = "us-east-1a",

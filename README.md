@@ -15,6 +15,9 @@ deploy_cfg = false # Deploys FortiOS Config <<< Not working because provider can
 os_user = "a_user_name"
 os_pass = "a_pass_word"
 
+# Used for DNS zone & record creation. Renders input.com
+dns_name = "whaterver-you-like"
+
 # forti stuff 
 ftg_ami      = "ami-059d36a8887155edb" # FortiGate-VM64-AWSONDEMAND build2360 (7.4.0) GA
 ftg_instance = "c4.large"
