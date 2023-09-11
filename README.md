@@ -11,6 +11,11 @@ deploy_obi = false # Deploys OBI & Routes to NATGW
 deploy_oig = true  # Deploys OBI & Routes to NATGW using FortiGates which are autoconfigured
 deploy_cfg = false # Deploys FortiOS Config <<< Not working because provider can't be conditional :(
 
+####### DMZ toggle: Dependency on var.vpcs having a secondary cidr, scidr' is added under var.vpcs for this reason
+deploy_dmz = false # Deploys DMZ VPC
+deploy_dmz_ftgs = false #Deploys Forti configured with north/south and policies permitting any/any in/out on both zones for ICMP/HTTPS/HTTP
+####### DMZ toggle END
+
 # Things used for OS deployments
 os_user = "a_user_name"
 os_pass = "a_pass_word"
@@ -47,24 +52,22 @@ vpcs = {
   "us-east-1" = {
     "vpc-01" = {
       cidr   = "10.10.0.0/16"
-      subnet = ["10.10.0.0/24", "10.10.1.0/24"]
+      scidr  = ["10.225.250.0/23", ] # Secondary CIDR for the VPC.  DMZ partition is built in the secondary, used in a local.  Could change that but will need the 
+      subnet = ["10.10.0.0/24", "10.10.1.0/24", ]
       tgw    = ["10.10.10.0/24", "10.10.20.0/24"]
       env    = "dev"
+      dmz    = "true" # toggle to true to enable the DMZ within this VPC, specify params for partition in var.dmz_partitions.
     }
-    #"vpc-02" = {
-    #  cidr   = "10.20.0.0/16"
-    #  subnet = ["10.20.0.0/24"]
-    #  tgw    = ["10.20.10.0/24"]
-    #  env    = "prd"
-    #}
-    #"vpc-03" = {
-    #  cidr   = "10.30.0.0/16"
-    #  subnet = ["10.30.0.0/24", "10.30.1.0/24"]
-    #  tgw    = ["10.30.10.0/24", "10.30.20.0/24"]
-    #  env    = "prd"
-    #}
+    "vpc-02" = {
+      cidr   = "10.20.0.0/16"
+      scidr  = []
+      subnet = ["10.20.0.0/24"]
+      tgw    = ["10.20.10.0/24"]
+      env    = "prd"
+      dmz    = "false"
+    }
   }
-}
+} 
 
 # Dynamically create EC2s in specific VPCs, Assigned to a specific AZ, which OS to use, and if userdata (UD) should be applied
 ec2 = {
@@ -98,6 +101,130 @@ storage_path     = "./scripts/openvpn"
 private_key_path = "./scripts/openvpn/key" # <replace the .pem in the path with your private key.  This is used in the null_resources for the SSH connectcfb
 
 my_ip = "xxx.xxx.xxx.xxx" # probably not needed
+
+
+###############################################
+#### DMZ Inspection VPC variables and DMZ FTGs 
+###############################################
+
+vpce_allowed_accounts = "arn:aws:iam::147504485631:user/rocfii-tf"
+
+dmz_inspection_vpc_cidr = "10.225.240.0/23"
+dmz_zones = {
+
+  north = {
+    zone_name = "dmz-north"
+    availability_zones = {
+      "us-east-1a" = {
+        loadbalancer_subnet = "10.225.240.16/28"
+        inspection_subnet    = "10.225.240.32/28"
+      }
+      "us-east-1b" = {
+        loadbalancer_subnet = "10.225.241.16/28"
+        inspection_subnet    = "10.225.241.32/28"
+      }
+    }
+  }
+
+  south = {
+    zone_name = "dmz-south"
+    availability_zones = {
+      "us-east-1a" = {
+        loadbalancer_subnet = "10.225.240.64/28"
+        inspection_subnet    = "10.225.240.80/28"
+      }
+      "us-east-1b" = {
+        loadbalancer_subnet = "10.225.241.64/28"
+        inspection_subnet    = "10.225.241.80/28"
+      }
+    }
+  }
+}
+
+dmz_management_subnets = {
+  "us-east-1a" = {
+    tgw_subnet          = "10.225.240.48/28"
+    management_subnet = "10.225.240.224/28"
+  }
+  "us-east-1b" = {
+    tgw_subnet          = "10.225.241.48/28"
+    management_subnet = "10.225.241.224/28"
+  }
+}
+
+dmz_ftg_ami_id        = "ami-059d36a8887155edb"
+dmz_ftg_instance_type = "c4.large"
+dmz_ftg_devices = {
+  "ftg01" = {
+    az                    = "us-east-1a"
+    management_ip_address = "10.225.240.229"
+    north_inspection_address = "10.225.240.37"
+    south_inspection_address  = "10.225.240.85"
+  }
+  # "ftg02" = {
+  #   az                    = "us-east-1b"
+  #   management_ip_address = "10.225.241.229"
+  #   north_inspection_address = "10.225.241.37"
+  #   south_inspection_address  = "10.225.241.85"
+  # }
+}
+
+###########################################
+#### Customer VPC DMZ Partitions variables 
+###########################################
+
+dmz_partitions = {
+  ### a single partition without a load balancer = server_outside (North) and server_inside (South) + management
+
+  us-east-1-vpc-01 = {
+    region         = "us-east-1"
+    vpc_name       = "us-east-1-vpc-01"
+    partition_type = "my-dmz-partition-type"
+    partition_name = "my-dmz-partition-name"
+    availability_zones = {
+      "us-east-1a" = { # address range is taken from the secondary cidrs range to avoid overlap in real world
+        servers_outside_subnet  = "10.225.250.0/28"
+        servers_inside_subnet   = "10.225.250.16/28"
+        management_subnet       = "10.225.250.32/28"
+        north_inspection_subnet = "10.225.250.48/28"
+        south_inspection_subnet = "10.225.250.64/28"
+      }
+      "us-east-1b" = { # address range is taken from the secondary cidrs range to avoid overlap in real world
+        servers_outside_subnet  = "10.225.251.0/28"
+        servers_inside_subnet   = "10.225.251.16/28"
+        management_subnet       = "10.225.251.32/28"
+        north_inspection_subnet = "10.225.251.48/28"
+        south_inspection_subnet = "10.225.251.64/28"
+      }
+    }
+  }
+
+  # us-east-1-vpc-02 = {
+  #   region         = "us-east-1"
+  #   vpc_name       = "us-east-1-vpc-02"
+  #   partition_type = "my-dmz-partition-type"
+  #   partition_name = "my-dmz-partition-name"
+  #   availability_zones = {
+  #     "us-east-1a" = { # address range is taken from the secondary cidrs range to avoid overlap in real world
+  #       servers_outside_subnet  = "10.225.252.0/28"
+  #       servers_inside_subnet   = "10.225.252.16/28"
+  #       management_subnet       = "10.225.252.32/28"
+  #       north_inspection_subnet = "10.225.252.48/28"
+  #       south_inspection_subnet = "10.225.252.64/28"
+  #     }
+  #     "us-east-1b" = { # address range is taken from the secondary cidrs range to avoid overlap in real world
+  #       # servers_outside_subnet  = "10.225.251.0/28"
+  #       # servers_inside_subnet   = "10.225.251.16/28"
+  #       # management_subnet       = "10.225.251.32/28"
+  #       # north_inspection_subnet = "10.225.251.48/28"
+  #       # south_inspection_subnet = "10.225.251.64/28"
+  #     }
+  #   }
+  # }
+}
+
+
+
 ```
 
 <!--- BEGIN_TF_DOCS --->

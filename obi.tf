@@ -28,7 +28,7 @@ module "vpcOBI" {
 }
 # Create EIP for OBI
 resource "aws_eip" "obi_eip" {
-  count = var.deploy_obi ? 1 : 0
+  count = var.deploy_oig ? 1 : 0
   tags = {
     Name = "OBI-EIP"
   }
@@ -57,7 +57,7 @@ resource "aws_subnet" "public_subnet" {
 
 # Create a NAT Gateway in the public subnet
 resource "aws_nat_gateway" "obi_nat_gw" {
-  count         = var.deploy_obi ? 1 : 0
+  count         = var.deploy_oig ? 1 : 0
   subnet_id     = aws_subnet.public_subnet[0].id
   allocation_id = aws_eip.obi_eip[0].id
 
@@ -144,11 +144,11 @@ resource "aws_route_table" "obitgw" {
 
 # Create 0/0 to NAT GW in TGW RTB
 resource "aws_route" "tgw_sub_to_nat" {
-  count                  = var.deploy_obi ? 1 : 0
+  count                  = var.deploy_obi && var.deploy_oig ? 1 : 0
+  # count                  = var.deploy_obi ? 1 : 0
   route_table_id         = aws_route_table.obitgw[0].id
   destination_cidr_block = "0.0.0.0/0"
   nat_gateway_id         = aws_nat_gateway.obi_nat_gw[0].id
-
 }
 
 # Associate OBI TGW Subnet to OBI TGW RTB
@@ -179,11 +179,11 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "obitgw_attch" {
 #
 #}
 
-resource "aws_ec2_transit_gateway_route" "obi" {
-  count                          = var.deploy_obi ? 1 : 0
-  destination_cidr_block         = "0.0.0.0/0"
-  transit_gateway_route_table_id = aws_ec2_transit_gateway.transit_gateway.association_default_route_table_id
-  transit_gateway_attachment_id  = aws_ec2_transit_gateway_vpc_attachment.obitgw_attch[0].id
+# resource "aws_ec2_transit_gateway_route" "obi" {
+#   count                          = var.deploy_obi ? 1 : 0
+#   destination_cidr_block         = "0.0.0.0/0"
+#   transit_gateway_route_table_id = aws_ec2_transit_gateway.transit_gateway.association_default_route_table_id
+#   transit_gateway_attachment_id  = aws_ec2_transit_gateway_vpc_attachment.obitgw_attch[0].id
 
-  depends_on = [aws_ec2_transit_gateway.transit_gateway]
-}
+#   depends_on = [aws_ec2_transit_gateway.transit_gateway]
+# }
