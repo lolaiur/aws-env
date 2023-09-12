@@ -8,7 +8,7 @@
 ##################
 
 module "OBI" {
-  count   = var.deploy_oig ? 1 : 0
+  count   = var.deploy_obi ? 1 : 0
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 5.0"
 
@@ -32,7 +32,7 @@ module "OBI" {
 }
 
 resource "aws_ec2_transit_gateway_vpc_attachment" "obi-tgw_attch" {
-  count                  = var.deploy_oig ? 1 : 0
+  count                  = var.deploy_obi ? 1 : 0
   subnet_ids             = [for s in aws_subnet.obi-tgw : s.id]
   transit_gateway_id     = aws_ec2_transit_gateway.transit_gateway.id
   vpc_id                 = module.OBI[0].vpc_id
@@ -49,7 +49,7 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "obi-tgw_attch" {
 ##################
 
 resource "aws_subnet" "mgmt" {
-  for_each          = var.deploy_oig ? { for idx, cidr in var.obi.mgmt : idx => cidr } : {}
+  for_each          = var.deploy_obi ? { for idx, cidr in var.obi.mgmt : idx => cidr } : {}
   vpc_id            = module.OBI[0].vpc_id
   availability_zone = module.OBI[0].azs[each.key]
   cidr_block        = each.value
@@ -61,7 +61,7 @@ resource "aws_subnet" "mgmt" {
 
 
 resource "aws_subnet" "inspection" {
-  for_each          = var.deploy_oig ? { for idx, cidr in var.obi.inspection : idx => cidr } : {}
+  for_each          = var.deploy_obi ? { for idx, cidr in var.obi.inspection : idx => cidr } : {}
   vpc_id            = module.OBI[0].vpc_id
   availability_zone = module.OBI[0].azs[each.key]
   cidr_block        = each.value
@@ -72,7 +72,7 @@ resource "aws_subnet" "inspection" {
 }
 
 resource "aws_subnet" "gwlb" {
-  for_each          = var.deploy_oig ? { for idx, cidr in var.obi.gwlb : idx => cidr } : {}
+  for_each          = var.deploy_obi ? { for idx, cidr in var.obi.gwlb : idx => cidr } : {}
   vpc_id            = module.OBI[0].vpc_id
   availability_zone = module.OBI[0].azs[each.key]
   cidr_block        = each.value
@@ -83,7 +83,7 @@ resource "aws_subnet" "gwlb" {
 }
 
 resource "aws_subnet" "nat" {
-  for_each          = var.deploy_oig ? { for idx, cidr in var.obi.nat : idx => cidr } : {}
+  for_each          = var.deploy_obi ? { for idx, cidr in var.obi.nat : idx => cidr } : {}
   vpc_id            = module.OBI[0].vpc_id
   availability_zone = module.OBI[0].azs[each.key]
   cidr_block        = each.value
@@ -94,7 +94,7 @@ resource "aws_subnet" "nat" {
 }
 
 resource "aws_subnet" "obi-tgw" {
-  for_each          = var.deploy_oig ? { for idx, cidr in var.obi.tgw : idx => cidr } : {}
+  for_each          = var.deploy_obi ? { for idx, cidr in var.obi.tgw : idx => cidr } : {}
   vpc_id            = module.OBI[0].vpc_id
   availability_zone = module.OBI[0].azs[each.key]
   cidr_block        = each.value
@@ -110,7 +110,7 @@ resource "aws_subnet" "obi-tgw" {
 ##################
 
 resource "aws_route_table" "mgmt" {
-  for_each = var.deploy_oig ? toset(values(local.azs)) : toset([])
+  for_each = var.deploy_obi ? toset(values(local.azs)) : toset([])
   vpc_id   = module.OBI[0].vpc_id
 
   tags = {
@@ -119,7 +119,7 @@ resource "aws_route_table" "mgmt" {
 }
 
 resource "aws_route_table" "inspection" {
-  for_each = var.deploy_oig ? toset(values(local.azs)) : toset([])
+  for_each = var.deploy_obi ? toset(values(local.azs)) : toset([])
   vpc_id   = module.OBI[0].vpc_id
 
   tags = {
@@ -128,7 +128,7 @@ resource "aws_route_table" "inspection" {
 }
 
 resource "aws_route_table" "gwlb" {
-  for_each = var.deploy_oig ? toset(values(local.azs)) : toset([])
+  for_each = var.deploy_obi ? toset(values(local.azs)) : toset([])
   vpc_id   = module.OBI[0].vpc_id
 
   tags = {
@@ -137,7 +137,7 @@ resource "aws_route_table" "gwlb" {
 }
 
 resource "aws_route_table" "nat" {
-  for_each = var.deploy_oig ? toset(values(local.azs)) : toset([])
+  for_each = var.deploy_obi ? toset(values(local.azs)) : toset([])
   vpc_id   = module.OBI[0].vpc_id
 
   tags = {
@@ -146,7 +146,7 @@ resource "aws_route_table" "nat" {
 }
 
 resource "aws_route_table" "igw" {
-  count  = var.deploy_oig ? 1 : 0
+  count  = var.deploy_obi ? 1 : 0
   vpc_id = module.OBI[0].vpc_id
 
   tags = {
@@ -155,7 +155,7 @@ resource "aws_route_table" "igw" {
 }
 
 resource "aws_route_table" "obi-tgw" {
-  for_each = var.deploy_oig ? toset(values(local.azs)) : toset([])
+  for_each = var.deploy_obi ? toset(values(local.azs)) : toset([])
   vpc_id   = module.OBI[0].vpc_id
 
   tags = {
@@ -170,31 +170,31 @@ resource "aws_route_table" "obi-tgw" {
 ##################
 
 resource "aws_route_table_association" "mgmt" {
-  for_each       = var.deploy_oig ? { for s in aws_subnet.mgmt : s.availability_zone => s.id } : {}
+  for_each       = var.deploy_obi ? { for s in aws_subnet.mgmt : s.availability_zone => s.id } : {}
   subnet_id      = each.value
   route_table_id = aws_route_table.mgmt[each.key].id
 }
 
 resource "aws_route_table_association" "inspection" {
-  for_each       = var.deploy_oig ? { for s in aws_subnet.inspection : s.availability_zone => s.id } : {}
+  for_each       = var.deploy_obi ? { for s in aws_subnet.inspection : s.availability_zone => s.id } : {}
   subnet_id      = each.value
   route_table_id = aws_route_table.inspection[each.key].id
 }
 
 resource "aws_route_table_association" "gwlb" {
-  for_each       = var.deploy_oig ? { for s in aws_subnet.gwlb : s.availability_zone => s.id } : {}
+  for_each       = var.deploy_obi ? { for s in aws_subnet.gwlb : s.availability_zone => s.id } : {}
   subnet_id      = each.value
   route_table_id = aws_route_table.gwlb[each.key].id
 }
 
 resource "aws_route_table_association" "nat" {
-  for_each       = var.deploy_oig ? { for s in aws_subnet.nat : s.availability_zone => s.id } : {}
+  for_each       = var.deploy_obi ? { for s in aws_subnet.nat : s.availability_zone => s.id } : {}
   subnet_id      = each.value
   route_table_id = aws_route_table.nat[each.key].id
 }
 
 resource "aws_route_table_association" "obi-tgw" {
-  for_each       = var.deploy_oig ? { for s in aws_subnet.obi-tgw : s.availability_zone => s.id } : {}
+  for_each       = var.deploy_obi ? { for s in aws_subnet.obi-tgw : s.availability_zone => s.id } : {}
   subnet_id      = each.value
   route_table_id = aws_route_table.obi-tgw[each.key].id
 }
@@ -207,7 +207,7 @@ resource "aws_route_table_association" "obi-tgw" {
 ########## TGW RTB ##########
 ## -> TGW to GWLBe
 resource "aws_route" "tgw_to_gwlbe" {
-  for_each               = var.deploy_oig ? toset(values(local.azs)) : toset([])
+  for_each               = var.deploy_obi ? toset(values(local.azs)) : toset([])
   route_table_id         = aws_route_table.obi-tgw[each.key].id
   destination_cidr_block = "0.0.0.0/0"
   #vpc_endpoint_id        = aws_vpc_endpoint.gwlbe[each.key].id
@@ -217,7 +217,7 @@ resource "aws_route" "tgw_to_gwlbe" {
 ########## NAT RTB ##########
 ## 0/0 -> IGW
 resource "aws_route" "tgw-def_to_igw" {
-  for_each               = var.deploy_oig ? toset(values(local.azs)) : toset([])
+  for_each               = var.deploy_obi ? toset(values(local.azs)) : toset([])
   route_table_id         = aws_route_table.nat[each.key].id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.obi-igw[0].id
@@ -225,7 +225,7 @@ resource "aws_route" "tgw-def_to_igw" {
 
 ## Env -> VPCe
 resource "aws_route" "tgw-env_to_vpce" {
-  for_each               = var.deploy_oig ? toset(values(local.azs)) : toset([])
+  for_each               = var.deploy_obi ? toset(values(local.azs)) : toset([])
   route_table_id         = aws_route_table.nat[each.key].id
   destination_cidr_block = "10.0.0.0/8"
   vpc_endpoint_id        = aws_vpc_endpoint.gwlbe[index(values(local.azs), each.key)].id
@@ -234,16 +234,18 @@ resource "aws_route" "tgw-env_to_vpce" {
 ########## MGT RTB ##########
 ## 0/0 -> NAT
 resource "aws_route" "mgmt-def_to_nat" {
-  for_each               = var.deploy_oig ? toset(values(local.azs)) : toset([])
+  for_each               = var.deploy_obi ? toset(values(local.azs)) : toset([])
   route_table_id         = aws_route_table.mgmt[each.key].id
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = aws_nat_gateway.obi_nat[index(values(local.azs), each.key)].id
+  # nat_gateway_id         = aws_nat_gateway.obi_nat[index(values(local.azs), each.key)].id
+  nat_gateway_id         = var.deploy_oig ? aws_nat_gateway.obi_nat[index(values(local.azs), each.key)].id : null
+  transit_gateway_id     = var.deploy_oig == false ? aws_ec2_transit_gateway.transit_gateway.id : null
 
 }
 
 ## Env -> TGW
 resource "aws_route" "mgmt-env_to_tgw" {
-  for_each               = var.deploy_oig ? toset(values(local.azs)) : toset([])
+  for_each               = var.deploy_obi ? toset(values(local.azs)) : toset([])
   route_table_id         = aws_route_table.mgmt[each.key].id
   destination_cidr_block = "10.0.0.0/8"
   transit_gateway_id     = aws_ec2_transit_gateway.transit_gateway.id
@@ -252,16 +254,17 @@ resource "aws_route" "mgmt-env_to_tgw" {
 ########## GWLB RTB ##########
 ## 0/0 -> NAT
 resource "aws_route" "gwlb-def_to_nat" {
-  for_each               = var.deploy_oig ? toset(values(local.azs)) : toset([])
+  for_each               = var.deploy_obi ? toset(values(local.azs)) : toset([])
   route_table_id         = aws_route_table.gwlb[each.key].id
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = aws_nat_gateway.obi_nat[index(values(local.azs), each.key)].id
-
+  # nat_gateway_id         = aws_nat_gateway.obi_nat[index(values(local.azs), each.key)].id  # this is related to deploy_oig, it can't be toggled off without otherwise giving a "false" value that is suitable as a next hop for the destination cidr.  Suggest the Transit Gateway.
+  nat_gateway_id         = var.deploy_oig ? aws_nat_gateway.obi_nat[index(values(local.azs), each.key)].id : null
+  transit_gateway_id     = var.deploy_oig == false ? aws_ec2_transit_gateway.transit_gateway.id : null
 }
 
 ## Env -> TGW
 resource "aws_route" "gwlb-env_to_tgw" { # Need to confirm
-  for_each               = var.deploy_oig ? toset(values(local.azs)) : toset([])
+  for_each               = var.deploy_obi ? toset(values(local.azs)) : toset([])
   route_table_id         = aws_route_table.gwlb[each.key].id
   destination_cidr_block = "10.0.0.0/8"
   transit_gateway_id     = aws_ec2_transit_gateway.transit_gateway.id
@@ -270,16 +273,17 @@ resource "aws_route" "gwlb-env_to_tgw" { # Need to confirm
 ########## Inspection RTB ##########
 ## 0/0 -> NAT
 resource "aws_route" "inspect-def_to_nat" {
-  for_each               = var.deploy_oig ? toset(values(local.azs)) : toset([])
+  for_each               = var.deploy_obi ? toset(values(local.azs)) : toset([])
   route_table_id         = aws_route_table.inspection[each.key].id
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = aws_nat_gateway.obi_nat[index(values(local.azs), each.key)].id
-
+  # nat_gateway_id         = aws_nat_gateway.obi_nat[index(values(local.azs), each.key)].id # this is related to deploy_oig, it can't be toggled off without otherwise giving a "false" value that is suitable as a next hop for the destination cidr.  Suggest the Transit Gateway.
+  nat_gateway_id         = var.deploy_oig ? aws_nat_gateway.obi_nat[index(values(local.azs), each.key)].id : null
+  transit_gateway_id     = var.deploy_oig == false ? aws_ec2_transit_gateway.transit_gateway.id : null
 }
 
 ############ TGW ROUTE #############
 resource "aws_ec2_transit_gateway_route" "obirt" {
-  count                          = var.deploy_oig ? 1 : 0
+  count                          = var.deploy_obi ? 1 : 0
   destination_cidr_block         = "0.0.0.0/0"
   transit_gateway_route_table_id = aws_ec2_transit_gateway.transit_gateway.association_default_route_table_id
   transit_gateway_attachment_id  = aws_ec2_transit_gateway_vpc_attachment.obi-tgw_attch[0].id
@@ -351,7 +355,7 @@ resource "aws_network_interface" "mgmt_eni" {
 ##################
 
 resource "aws_internet_gateway" "obi-igw" {
-  count  = var.deploy_oig ? 1 : 0
+  count  = var.deploy_obi ? 1 : 0
   vpc_id = module.OBI[0].vpc_id
   tags = {
     Name = "OBI.igw"
@@ -366,7 +370,8 @@ resource "aws_internet_gateway" "obi-igw" {
 
 resource "aws_eip" "obi-eip" {
   # Create an EIP for each AZ if deploy_oig is true
-  count = var.deploy_oig ? length(var.obi["nat"]) : 0
+  # count = var.deploy_obi ? length(var.obi["nat"]) : 0
+count = var.deploy_oig ? length(var.obi["nat"]) : 0
   tags = {
     Name = "OBI.eip"
   }
@@ -374,7 +379,8 @@ resource "aws_eip" "obi-eip" {
 
 resource "aws_nat_gateway" "obi_nat" {
   # Create a NAT Gateway for each AZ if deploy_oig is true
-  count         = var.deploy_oig ? length(var.obi["nat"]) : 0
+  # count         = var.deploy_obi ? length(var.obi["nat"]) : 0
+count = var.deploy_oig ? length(var.obi["nat"]) : 0
   subnet_id     = aws_subnet.nat[count.index].id
   allocation_id = aws_eip.obi-eip[count.index].id
 
@@ -390,7 +396,7 @@ resource "aws_nat_gateway" "obi_nat" {
 ##################
 
 resource "aws_lb" "gwlb" {
-  count                            = var.deploy_oig ? 1 : 0
+  count                            = var.deploy_obi ? 1 : 0
   name                             = "OBI-gwlb"
   load_balancer_type               = "gateway"
   enable_deletion_protection       = false
@@ -403,14 +409,14 @@ resource "aws_lb" "gwlb" {
 }
 
 resource "aws_vpc_endpoint_service" "gwlb" {
-  count                      = var.deploy_oig ? 1 : 0
+  count                      = var.deploy_obi ? 1 : 0
   acceptance_required        = false
   allowed_principals         = [data.aws_caller_identity.current.arn]
   gateway_load_balancer_arns = [aws_lb.gwlb[0].arn]
 }
 
 resource "aws_vpc_endpoint" "gwlbe" {
-  count             = var.deploy_oig ? length(var.obi.gwlb) : 0
+  count             = var.deploy_obi ? length(var.obi.gwlb) : 0
   service_name      = aws_vpc_endpoint_service.gwlb[0].service_name # Referencing the single VPC endpoint service
   subnet_ids        = [aws_subnet.gwlb[count.index].id]
   vpc_endpoint_type = aws_vpc_endpoint_service.gwlb[0].service_type # Referencing the single VPC endpoint service
@@ -423,7 +429,7 @@ resource "aws_vpc_endpoint" "gwlbe" {
 
 # Create a Target Group for the Gateway Load Balancer
 resource "aws_lb_target_group" "gwlb_tg" {
-  count                = var.deploy_oig ? 1 : 0
+  count                = var.deploy_obi ? 1 : 0
   name                 = "OBI-gwlb-tg"
   port                 = "6081"
   protocol             = "GENEVE"
@@ -452,7 +458,7 @@ resource "aws_lb_target_group" "gwlb_tg" {
 
 # Create a Listener for the Gateway Load Balancer
 resource "aws_lb_listener" "gwlb_listener" {
-  count             = var.deploy_oig ? 1 : 0
+  count             = var.deploy_obi ? 1 : 0
   load_balancer_arn = aws_lb.gwlb[0].arn
 
   default_action {

@@ -178,8 +178,12 @@ variable "x_zone_lb" {
   default     = false
 }
 
-variable "dns_name" {
-  description = "DNS name to use for the DNS zone"
-  type        = string
-  default     = "your-own"
+variable "win_ami" {
+  description = "Windows ami id"
+  type = string
+}
+
+variable "lnx_ami" {
+  description = "Windows ami id"
+  type = string
 }

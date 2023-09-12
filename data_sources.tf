@@ -8,12 +8,12 @@ data "aws_region" "current" {}
 
 # Collects GWLBe IP for FortiOS remote_ip
 data "aws_network_interface" "endpoint" {
-  count = var.deploy_oig ? 1 : 0
+  count = var.deploy_obi ? 1 : 0
   id    = tolist(aws_vpc_endpoint.gwlbe[0].network_interface_ids)[0]
 }
 
 data "aws_network_interfaces" "gwlb_enis" {
-  count = var.deploy_oig ? 1 : 0
+  count = var.deploy_obi ? 1 : 0
   filter {
     name   = "description"
     values = ["ELB gwy/${aws_lb.gwlb[0].name}/*"]
@@ -21,7 +21,7 @@ data "aws_network_interfaces" "gwlb_enis" {
 }
 
 data "aws_network_interface" "gwlb_eni" {
-  for_each = var.deploy_oig ? var.ftg : {}
+  for_each = var.deploy_obi ? var.ftg : {}
 
   filter {
     name   = "description"
@@ -35,7 +35,7 @@ data "aws_network_interface" "gwlb_eni" {
 }
 
 data "template_file" "ftg_config" {
-  for_each = var.deploy_oig ? var.ftg : {}
+  for_each = var.deploy_obi ? var.ftg : {}
 
   template = file("./forti.tpl")
 
