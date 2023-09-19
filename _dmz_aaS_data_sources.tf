@@ -1,9 +1,9 @@
 data "aws_subnet" "tgw" {
-  for_each = var.deploy_dmz ? merge([ for k, v in local.tgw_subnets_keys : { "${v.vpc_name}" = v }]...) : {}
-  vpc_id   = module.vpc[each.value.vpc_name].vpc_id
+  for_each   = var.deploy_dmz ? merge([for k, v in local.tgw_subnets_keys : { "${v.vpc_name}" = v }]...) : {}
+  vpc_id     = module.vpc[each.value.vpc_name].vpc_id
   cidr_block = each.value.cidr
 
-  depends_on = [ module.vpc, aws_subnet.tgw  ]
+  depends_on = [module.vpc, aws_subnet.tgw]
 }
 
 data "aws_route_table" "tgw" {
@@ -18,11 +18,11 @@ data "template_file" "dmz_ftg_config" {
   template = file("./dmz_forti.tpl")
 
   vars = {
-    gwlb_ip_2                   = data.aws_network_interface.dmz_gwlb_eni["north_${each.value.az}"].private_ip,
+    gwlb_ip_2                    = data.aws_network_interface.dmz_gwlb_eni["north_${each.value.az}"].private_ip,
     gwlb_subnet_mask_decimal_2   = cidrnetmask(aws_subnet.dmz_vpc_loadbalancer["north_${each.value.az}"].cidr_block),
     inspection_subnet_2          = aws_subnet.dmz_vpc_fw_inspection["north_${each.value.az}"].cidr_block,
     inspection_first_usable_ip_2 = cidrhost(aws_subnet.dmz_vpc_fw_inspection["north_${each.value.az}"].cidr_block, 1)
-    gwlb_ip_3                   = data.aws_network_interface.dmz_gwlb_eni["south_${each.value.az}"].private_ip,
+    gwlb_ip_3                    = data.aws_network_interface.dmz_gwlb_eni["south_${each.value.az}"].private_ip,
     gwlb_subnet_mask_decimal_3   = cidrnetmask(aws_subnet.dmz_vpc_loadbalancer["south_${each.value.az}"].cidr_block),
     inspection_subnet_3          = aws_subnet.dmz_vpc_fw_inspection["south_${each.value.az}"].cidr_block,
     inspection_first_usable_ip_3 = cidrhost(aws_subnet.dmz_vpc_fw_inspection["south_${each.value.az}"].cidr_block, 1)

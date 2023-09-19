@@ -8,8 +8,8 @@ module "dmz_ftg_ec2" {
 
   ami           = var.dmz_ftg_ami_id
   instance_type = var.dmz_ftg_instance_type
-#   key_name      = aws_key_pair.this.key_name
-  monitoring    = true
+  #   key_name      = aws_key_pair.this.key_name
+  monitoring = true
 
   network_interface = [
     {
@@ -20,9 +20,9 @@ module "dmz_ftg_ec2" {
       device_index         = 1
       network_interface_id = aws_network_interface.north_inspection_ftg[each.key].id
     },
-    {   
-         device_index         = 2
-        network_interface_id = aws_network_interface.south_inspection_ftg[each.key].id
+    {
+      device_index         = 2
+      network_interface_id = aws_network_interface.south_inspection_ftg[each.key].id
     }
   ]
 
@@ -79,7 +79,7 @@ resource "aws_security_group" "ftg_passthrough" {
 }
 
 resource "aws_security_group_rule" "ftg_passthrough_ingress" {
-  count             = var.deploy_dmz_ftgs ? 1 : 0 
+  count             = var.deploy_dmz_ftgs ? 1 : 0
   type              = "ingress"
   from_port         = 0
   to_port           = 0
@@ -90,7 +90,7 @@ resource "aws_security_group_rule" "ftg_passthrough_ingress" {
 }
 
 resource "aws_security_group_rule" "ftg_passthrough_egress" {
-  count             = var.deploy_dmz_ftgs ? 1 : 0 
+  count             = var.deploy_dmz_ftgs ? 1 : 0
   type              = "egress"
   from_port         = 0
   to_port           = 0
@@ -156,7 +156,7 @@ resource "aws_subnet" "dmz_vpc_fw_inspection" {
 # Create DMZ Management network
 resource "aws_route_table" "dmz_vpc_fw_inspection" {
   for_each = var.deploy_dmz ? var.dmz_zones : {}
-  vpc_id = module.dmz_vpc[0].vpc_id
+  vpc_id   = module.dmz_vpc[0].vpc_id
 
   tags = {
     "Name" = "dmz-vpc.mgmt.rt"

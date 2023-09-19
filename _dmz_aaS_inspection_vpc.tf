@@ -139,13 +139,13 @@ resource "aws_lb" "dmz_vpc_gwlb" {
   enable_cross_zone_load_balancing = var.x_zone_lb
   load_balancer_type               = "gateway"
 
-  
+
   # depends_on = [aws_subnet.dmz_vpc_loadbalancer]
 
   dynamic "subnet_mapping" {
     for_each = toset(each.value)
     content {
-      subnet_id = (aws_subnet.dmz_vpc_loadbalancer)[subnet_mapping.key].id 
+      subnet_id = (aws_subnet.dmz_vpc_loadbalancer)[subnet_mapping.key].id
     }
   }
   tags = {
@@ -175,7 +175,7 @@ resource "aws_lb_target_group" "dmz_vpc_gwlb" {
 
 # Create a Listener for the Gateway Load Balancer
 resource "aws_lb_listener" "dmz_gwlb_listener" {
-  for_each = var.deploy_dmz_ftgs ? local.gwlb_mappings : {}
+  for_each          = var.deploy_dmz_ftgs ? local.gwlb_mappings : {}
   load_balancer_arn = aws_lb.dmz_vpc_gwlb[each.key].arn
 
   default_action {
@@ -185,13 +185,13 @@ resource "aws_lb_listener" "dmz_gwlb_listener" {
 }
 
 resource "aws_lb_target_group_attachment" "north_dmz_vpc_gwlb" {
-  for_each         = var.deploy_dmz_ftgs ?  merge([ for k, v in var.dmz_ftg_devices : { "${k}_north_${v.az}" = { device = k, inspection_address = v.north_inspection_address, zone = "north" } }]...) : {}
+  for_each         = var.deploy_dmz_ftgs ? merge([for k, v in var.dmz_ftg_devices : { "${k}_north_${v.az}" = { device = k, inspection_address = v.north_inspection_address, zone = "north" } }]...) : {}
   target_group_arn = aws_lb_target_group.dmz_vpc_gwlb[each.value.zone].arn
   target_id        = aws_network_interface.north_inspection_ftg["${each.value.device}"].private_ip
 }
 
 resource "aws_lb_target_group_attachment" "south_dmz_vpc_gwlb" {
-  for_each         = var.deploy_dmz_ftgs ?  merge([ for k, v in var.dmz_ftg_devices : { "${k}_south_${v.az}" = { device = k, inspection_address = v.south_inspection_address, zone = "south" } }]...) : {}
+  for_each         = var.deploy_dmz_ftgs ? merge([for k, v in var.dmz_ftg_devices : { "${k}_south_${v.az}" = { device = k, inspection_address = v.south_inspection_address, zone = "south" } }]...) : {}
   target_group_arn = aws_lb_target_group.dmz_vpc_gwlb[each.value.zone].arn
   target_id        = aws_network_interface.south_inspection_ftg["${each.value.device}"].private_ip
 }

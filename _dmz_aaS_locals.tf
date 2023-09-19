@@ -8,10 +8,10 @@ locals {
     flatten([for az, az_value in zone_value["availability_zones"] :
       { for subnet, cidr in az_value :
         "${zone}_${az}" => {
-          "zone"           = zone
-          "subnet_az"      = az
-          "subnet_type"    = subnet
-          "cidr"           = cidr
+          "zone"        = zone
+          "subnet_az"   = az
+          "subnet_type" = subnet
+          "cidr"        = cidr
         } if subnet == "inspection_subnet"
       }
     ])
@@ -86,7 +86,7 @@ locals {
         "source_subnet_type"         = values.subnet_type
         "source_vpc_name"            = values.vpc_name
         "region"                     = values.region
-      } if values.partition != values2.partition && values.vpc_name == values2.vpc_name || # Disable east-west between partitions
+      } if values.partition != values2.partition && values.vpc_name == values2.vpc_name ||                                                                                       # Disable east-west between partitions
       values.partition != values2.partition && values.subnet_type == "management_subnet" && values2.subnet_type == "management_subnet" && values.vpc_name == values2.vpc_name || #Disable east-west between management and non-management
       values.partition == values2.partition && values.subnet_type == "management_subnet" && values2.subnet_type != "management_subnet" && values.vpc_name == values2.vpc_name
     }
@@ -106,9 +106,9 @@ locals {
   }
 
   # keys to build and reference the IGW route tables
-  igw_route_table_keys = { for v in local.flattened_vpcs : "${v.region}-${v.vpc_name}" => v if var.deploy_dmz && v.vpc_data.dmz == "true"}
+  igw_route_table_keys = { for v in local.flattened_vpcs : "${v.region}-${v.vpc_name}" => v if var.deploy_dmz && v.vpc_data.dmz == "true" }
 
-   # creates a list of all intra created subnets and assigns AZ values based on element position of var.vpcs.subnets
+  # creates a list of all intra created subnets and assigns AZ values based on element position of var.vpcs.subnets
   tgw_subnets_keys = merge(flatten([for region, vpc_values in var.vpcs :
     [for vpc_key, vpc_data in vpc_values :
       [for subnet_idx, subnet_cidr in vpc_data.tgw : {
@@ -128,14 +128,14 @@ locals {
   # maps of TGW ingress routes used in DMZ partition routing within the target VPC
   tgw_routes = { for tuple in setproduct(local.all_subnets, keys(var.dmz_partitions)) :
     "${tuple[1]}_${tuple[0].cidr}" => {
-      "partition" = tuple[0].partition
-      "partition_type" = tuple[0].partition_type
-      "subnet_az" = tuple[0].subnet_az
-      "subnet_type" = tuple[0].subnet_type
-      "cidr" = tuple[0].cidr
+      "partition"       = tuple[0].partition
+      "partition_type"  = tuple[0].partition_type
+      "subnet_az"       = tuple[0].subnet_az
+      "subnet_type"     = tuple[0].subnet_type
+      "cidr"            = tuple[0].cidr
       "tgw_route_table" = data.aws_route_table.tgw["${tuple[0].vpc_name}"].id
-      "vpc_name" = tuple[0].vpc_name
-      "vpc_id" = module.vpc["${tuple[0].vpc_name}"].vpc_id
+      "vpc_name"        = tuple[0].vpc_name
+      "vpc_id"          = module.vpc["${tuple[0].vpc_name}"].vpc_id
     } if contains(["lb_inside_subnet", "servers_inside_subnet", "lb_outside_subnet", "management_subnet"], tuple[0].subnet_type) && tuple[0].vpc_name == tuple[1] && var.deploy_dmz == true #Makes sure only south-facing subnets are routable from TGW
   }
 
