@@ -1,5 +1,3 @@
 # RELEASE NOTES
 
-- Cleaned up some tags
-
-- Fixed erroring local for deploy_oig false
+- Added cron aws-nuke workflow
