@@ -40,3 +40,6 @@ terraform.rc
 
 # Ingore Scripts Folder
 **/scripts/*
+
+# Ignore Pluralith
+**/.Pluralith/*

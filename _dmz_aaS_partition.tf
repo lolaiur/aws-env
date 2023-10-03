@@ -14,7 +14,7 @@ resource "aws_internet_gateway" "dmz_in_vpc_igw" {
 
 # Create IGW route table
 resource "aws_route_table" "dmz_in_vpc_igw" {
-  for_each = var.deploy_dmz ?  local.igw_route_table_keys : {}
+  for_each = var.deploy_dmz ? local.igw_route_table_keys : {}
   vpc_id   = module.vpc[each.key].vpc_id
 
   tags = {
@@ -42,7 +42,7 @@ resource "aws_route" "igw_to_partitions_az_vpce" {
 ##################################
 
 resource "aws_route" "dmz_in_vpc_tgw_to_az_vpce" {
-  for_each               = var.deploy_dmz ?  { for k, v in local.tgw_routes : k => v if v.subnet_type != "management_subnet"} : {}
+  for_each               = var.deploy_dmz ? { for k, v in local.tgw_routes : k => v if v.subnet_type != "management_subnet" } : {}
   route_table_id         = each.value.tgw_route_table
   destination_cidr_block = each.value.cidr
   vpc_endpoint_id        = aws_vpc_endpoint.dmz_in_vpc_gwlb["south_${each.value.vpc_name}_${each.value.subnet_az}"].id
@@ -53,7 +53,7 @@ resource "aws_route" "dmz_in_vpc_tgw_to_az_vpce" {
 ##################################
 
 resource "aws_subnet" "dmz_in_vpc_vpce" {
-  for_each          = var.deploy_dmz ? local.dmz_in_vpc_gwlbes  : {}
+  for_each          = var.deploy_dmz ? local.dmz_in_vpc_gwlbes : {}
   vpc_id            = module.vpc[each.value.vpc_name].vpc_id
   cidr_block        = each.value.inspection_subnet
   availability_zone = each.value.az
@@ -128,7 +128,7 @@ resource "aws_route_table" "dmz_in_vpc_partition_subnets" {
 }
 
 resource "aws_route_table_association" "partition_subnets" {
-  for_each       = var.deploy_dmz ?  { for subnets, subnet_values in local.all_subnets_key : subnets => subnet_values if subnet_values.subnet_type != "south_inspection_subnet" && subnet_values.subnet_type != "north_inspection_subnet" } : {}
+  for_each       = var.deploy_dmz ? { for subnets, subnet_values in local.all_subnets_key : subnets => subnet_values if subnet_values.subnet_type != "south_inspection_subnet" && subnet_values.subnet_type != "north_inspection_subnet" } : {}
   subnet_id      = aws_subnet.dmz_in_vpc_partition_subnets[each.key].id
   route_table_id = aws_route_table.dmz_in_vpc_partition_subnets[each.key].id
 }
@@ -149,7 +149,7 @@ resource "aws_route" "partitions_east_west_to_south_vpce" {
 
 # #### Defaults to VPCe
 resource "aws_route" "partition_subnets_defaults_to_vpce" {
-  for_each               = var.deploy_dmz ? { for subnets, subnet_values in local.all_subnets_key : subnets => subnet_values if subnet_values["subnet_type"] != "south_inspection_subnet" && subnet_values["subnet_type"] != "north_inspection_subnet" } :{}
+  for_each               = var.deploy_dmz ? { for subnets, subnet_values in local.all_subnets_key : subnets => subnet_values if subnet_values["subnet_type"] != "south_inspection_subnet" && subnet_values["subnet_type"] != "north_inspection_subnet" } : {}
   route_table_id         = aws_route_table.dmz_in_vpc_partition_subnets[each.key].id
   destination_cidr_block = "0.0.0.0/0"
   vpc_endpoint_id        = contains(["servers_outside_subnet"], each.value.subnet_type) ? aws_vpc_endpoint.dmz_in_vpc_gwlb[each.value.gwlbe_mapping].id : (contains(["management_subnet"], each.value.subnet_type) ? null : (contains(["servers_inside_subnet"], each.value.subnet_type) ? aws_vpc_endpoint.dmz_in_vpc_gwlb[each.value.gwlbe_mapping].id : null))

@@ -178,12 +178,18 @@ variable "x_zone_lb" {
   default     = false
 }
 
-variable "win_ami" {
-  description = "Windows ami id"
-  type = string
-}
+#variable "win_ami" {
+#  description = "Windows ami id"
+#  type        = string
+#}
+#
+#variable "lnx_ami" {
+#  description = "Windows ami id"
+#  type        = string
+#}
 
-variable "lnx_ami" {
-  description = "Windows ami id"
+variable "dns_name" {
+  description = "DNS name for AWS"
   type = string
+
 }
