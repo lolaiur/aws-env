@@ -267,6 +267,7 @@ dmz_partitions = {
 | [aws_customer_gateway.customer_gw](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/customer_gateway) | resource |
 | [aws_ec2_transit_gateway.transit_gateway](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/ec2_transit_gateway) | resource |
 | [aws_ec2_transit_gateway_route.blackhole_route](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/ec2_transit_gateway_route) | resource |
+| [aws_ec2_transit_gateway_route.obi](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/ec2_transit_gateway_route) | resource |
 | [aws_ec2_transit_gateway_route.obirt](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/ec2_transit_gateway_route) | resource |
 | [aws_ec2_transit_gateway_route.static_route](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/ec2_transit_gateway_route) | resource |
 | [aws_ec2_transit_gateway_route_table.route_table](https://registry.terraform.io/providers/hashicorp/aws/5.13.1/docs/resources/ec2_transit_gateway_route_table) | resource |
@@ -449,12 +450,12 @@ dmz_partitions = {
 | <a name="input_dmz_management_subnets"></a> [dmz\_management\_subnets](#input\_dmz\_management\_subnets) | A map of DMZ management subnets | `map(any)` | n/a | yes |
 | <a name="input_dmz_partitions"></a> [dmz\_partitions](#input\_dmz\_partitions) | A map of DMZ partition subnets to create | `map(any)` | n/a | yes |
 | <a name="input_dmz_zones"></a> [dmz\_zones](#input\_dmz\_zones) | stuff | `map(any)` | n/a | yes |
+| <a name="input_dns_name"></a> [dns\_name](#input\_dns\_name) | DNS name for AWS | `string` | n/a | yes |
 | <a name="input_ec2"></a> [ec2](#input\_ec2) | Configuration for EC2 instances | <pre>map(object({<br>    vpc = string<br>    az  = string<br>    os  = string<br>    ud  = string<br>  }))</pre> | n/a | yes |
 | <a name="input_forti_token"></a> [forti\_token](#input\_forti\_token) | Token generated from FortiOS for API User | `string` | `""` | no |
 | <a name="input_ftg"></a> [ftg](#input\_ftg) | Defines number of FTGs to deploy, which az, and if they should be placed into target group | <pre>map(object({<br>    az = string # Availability Zone index as a string<br>    tg = string # Whether to add to target group: 'y' or 'n'<br>  }))</pre> | n/a | yes |
 | <a name="input_ftg_ami"></a> [ftg\_ami](#input\_ftg\_ami) | Value of FTG AMI to use | `string` | n/a | yes |
 | <a name="input_ftg_instance"></a> [ftg\_instance](#input\_ftg\_instance) | Value of Instance Type for FTG | `string` | n/a | yes |
-| <a name="input_lnx_ami"></a> [lnx\_ami](#input\_lnx\_ami) | Windows ami id | `string` | n/a | yes |
 | <a name="input_my_ip"></a> [my\_ip](#input\_my\_ip) | n/a | `string` | n/a | yes |
 | <a name="input_obi"></a> [obi](#input\_obi) | The CIDRs for OBI setup | <pre>object({<br>    cidr       = string<br>    intra      = list(string)<br>    mgmt       = list(string)<br>    inspection = list(string)<br>    nat        = list(string)<br>    gwlb       = list(string)<br>    tgw        = list(string)<br>  })</pre> | n/a | yes |
 | <a name="input_os_pass"></a> [os\_pass](#input\_os\_pass) | Password you wish to pass into userdata | `string` | n/a | yes |
@@ -467,7 +468,6 @@ dmz_partitions = {
 | <a name="input_storage_path"></a> [storage\_path](#input\_storage\_path) | storage path keys to local | `string` | `"./openvpn"` | no |
 | <a name="input_vpce_allowed_accounts"></a> [vpce\_allowed\_accounts](#input\_vpce\_allowed\_accounts) | A list of vpce\_allowed\_accounts | `any` | n/a | yes |
 | <a name="input_vpcs"></a> [vpcs](#input\_vpcs) | Map of regions to VPCs to create | `any` | `{}` | no |
-| <a name="input_win_ami"></a> [win\_ami](#input\_win\_ami) | Windows ami id | `string` | n/a | yes |
 | <a name="input_x_zone_lb"></a> [x\_zone\_lb](#input\_x\_zone\_lb) | Toggles Cross Zone LB on GWLB | `bool` | `false` | no |
 
 ## Outputs
