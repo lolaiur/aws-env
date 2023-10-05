@@ -4,16 +4,25 @@
 variable "dmz_zones" {
   description = "stuff"
   type        = map(any)
+  default = {}
 }
 
 variable "deploy_dmz" {
   description = "stuff"
   type        = bool
+  default = false
 }
 
 variable "deploy_dmz_ftgs" {
   description = "stuff"
   type        = bool
+  default = false
+}
+
+variable "deploy_dmz_in_vpc" {
+  description = "stuff"
+  type        = bool
+  default = false
 }
 
 variable "dmz_ftg_ami_id" {

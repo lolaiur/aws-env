@@ -14,6 +14,7 @@ deploy_cfg = false # Deploys FortiOS Config <<< Not working because provider can
 ####### DMZ toggle: Dependency on var.vpcs having a secondary cidr, scidr' is added under var.vpcs for this reason
 deploy_dmz = false # Deploys DMZ VPC
 deploy_dmz_ftgs = false #Deploys Forti configured with north/south and policies permitting any/any in/out on both zones for ICMP/HTTPS/HTTP
+deploy_dmz_in_vpc = false #Deploys routing and IGW into 'customer' VPC  (var.vpcs should also contain a "dmz" value of true and secondary cidrs are configured with 'scidr' in var.vpcs)
 ####### DMZ toggle END
 
 # Things used for OS deployments
