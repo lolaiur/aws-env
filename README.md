@@ -10,6 +10,8 @@ deploy_dns = true  # Deploys DNS & Updates A Records
 deploy_obi = false # Deploys OBI & Routes to NATGW
 deploy_oig = true  # Deploys OBI & Routes to NATGW using FortiGates which are autoconfigured
 deploy_cfg = false # Deploys FortiOS Config <<< Not working because provider can't be conditional :(
+deploy_ipm = true  # Deploys IPAM
+
 
 ####### DMZ toggle: Dependency on var.vpcs having a secondary cidr, scidr' is added under var.vpcs for this reason
 deploy_dmz = false # Deploys DMZ VPC
