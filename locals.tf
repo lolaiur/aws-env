@@ -186,4 +186,21 @@ locals {
 
   azs_raw = [for val in var.ftg : local.az_mapping[val.az]]
   azs     = { for idx, az in local.azs_raw : idx => az }
+
+  # For IPAM Regions
+  # Flattening the byoip map to a list of maps
+  flattened_byoip = flatten([
+    for region, blocks in var.byoip : [
+      for descriptor, details in blocks : {
+        region     = region,
+        descriptor = descriptor,
+        cidr       = details.cidr,
+        message    = details.message,
+        signature  = details.signature
+      }
+    ]
+  ])
+
+  all_ipam_regions = toset([for item in local.flattened_byoip : item.region])
+
 }

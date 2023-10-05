@@ -28,6 +28,29 @@ ftg_ami      = "ami-059d36a8887155edb" # FortiGate-VM64-AWSONDEMAND build2360 (7
 ftg_instance = "c4.large"
 forti_token  = "a_long_token"
 
+# Imports Public BYOIP Specifics
+byoip = {
+  "us-east-1" = {
+    "byoip-01" = {
+      cidr      = "your.pub.ipv.4a",
+      message   = "aaa",
+      signature = "111"
+    }
+  }
+  "us-east-2" = {
+    "byoip-01" = {
+      cidr      = "your.pub.ipv.4b",
+      message   = "bbb",
+      signature = "222",
+    }
+    "byoip-02" = {
+      cidr      = "your.pub.ipv.4c",
+      message   = "ccc",
+      signature = "333"
+    }
+  }
+}
+
 # OBI Specifics
 x_zone_lb = false # Sets if you want Cross AZ LB (Can be costly!)
 obi = { # Defines OBI VPC. Remove/Add to list for more/less AZs

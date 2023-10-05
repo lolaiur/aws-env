@@ -190,6 +190,27 @@ variable "x_zone_lb" {
 
 variable "dns_name" {
   description = "DNS name for AWS"
-  type = string
+  type        = string
 
+}
+
+variable "ipam_regions" {
+  description = "List of regions to deploy IPAM"
+  type        = list(any)
+  default     = ["us-east-1"]
+}
+
+variable "byoip" {
+  description = "Values for BYOIP"
+  type = map(map(object({
+    cidr      = string
+    message   = string
+    signature = string
+  })))
+}
+
+variable "deploy_ipm" {
+  description = "Toggles IPAM deployment"
+  type        = bool
+  default     = false
 }

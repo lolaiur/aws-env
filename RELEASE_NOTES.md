@@ -1,3 +1,3 @@
 # RELEASE NOTES
 
-- Added cron aws-nuke workflow
+- Added candidate IPAM & BYOIP Things
